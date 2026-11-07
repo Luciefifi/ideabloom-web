@@ -18,6 +18,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { ApiStatus } from '@/features/system/api-status';
+import { UserMenu } from './user-menu';
 import {
   isNavItemActive,
   navGroups,
@@ -79,6 +80,7 @@ export function AppSidebar() {
         <SidebarMenu>
           <NavLink item={settingsNavItem} />
         </SidebarMenu>
+        <UserMenu />
         <ApiStatus />
       </SidebarFooter>
 

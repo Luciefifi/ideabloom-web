@@ -1,3 +1,5 @@
+import { hardNavigate } from './navigation';
+
 /**
  * The single place where the web app talks to the IdeaBloom API.
  *
@@ -123,8 +125,7 @@ async function defaultSessionExpiredHandler(): Promise<void> {
     credentials: 'same-origin',
   }).catch(() => undefined);
   const next = window.location.pathname + window.location.search;
-  // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload on purpose: wipes all in-memory user data
-  window.location.assign(`/login?next=${encodeURIComponent(next)}`);
+  hardNavigate(`/login?next=${encodeURIComponent(next)}`);
 }
 
 let onSessionExpired: () => void | Promise<void> = defaultSessionExpiredHandler;

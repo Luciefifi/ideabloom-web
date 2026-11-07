@@ -1,7 +1,14 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { authApi, type LoginInput, type RegisterInput } from './api';
+import { hardNavigate } from '@/lib/navigation';
+import {
+  authApi,
+  type ChangePasswordInput,
+  type LoginInput,
+  type ProfileInput,
+  type RegisterInput,
+} from './api';
 
 export const currentUserQueryKey = ['auth', 'me'] as const;
 
@@ -36,9 +43,7 @@ export function useLogout() {
     mutationFn: authApi.logout,
     // A full page load (not a client-side navigation) guarantees no personal
     // data stays in memory after logging out, even if the request failed.
-    onSettled: () =>
-      // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- full reload on purpose: wipes all in-memory user data
-      window.location.assign('/login'),
+    onSettled: () => hardNavigate('/login'),
   });
 }
 
@@ -52,5 +57,27 @@ export function useResetPassword() {
   return useMutation({
     mutationFn: ({ token, password }: { token: string; password: string }) =>
       authApi.resetPassword(token, password),
+  });
+}
+
+export function useLogoutAll() {
+  return useMutation({
+    mutationFn: authApi.logoutAll,
+    onSuccess: () => hardNavigate('/login'),
+  });
+}
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: ProfileInput) => authApi.updateProfile(input),
+    // Everywhere that shows the user (e.g. the sidebar menu) updates instantly.
+    onSuccess: (user) => queryClient.setQueryData(currentUserQueryKey, user),
+  });
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (input: ChangePasswordInput) => authApi.changePassword(input),
   });
 }

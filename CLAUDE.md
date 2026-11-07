@@ -41,6 +41,8 @@ inside this folder. At the start of a session, check its progress log to see whe
   `src/components/forms/`. Components using `useSearchParams` must be inside `<Suspense>`.
 - Auth: never store tokens in JS; rely on cookies. Use `useCurrentUser()`. Route rules live in
   `src/lib/auth-routes.ts` (tested). Follow `?next=` only via `getSafeRedirect`.
-- Tests mock `next/navigation` (useRouter/useSearchParams) and `fetch`; use `renderWithProviders`.
+- Tests mock `next/navigation` (useRouter/useSearchParams), fake the API with `mockApi({ 'GET /users/me': … })`
+  and use `testUser`/`renderWithProviders` from `src/test/render.tsx`. Mock `@/lib/navigation` for logout flows.
+- Don't use shadcn's `SidebarMenuSkeleton` (Math.random breaks prerendering); use `useWatch`, not `watch()`.
   Run `npm run typecheck` too: Vitest doesn't type-check, and the build does.
 - Don't install `@vitejs/plugin-react` or use `--legacy-peer-deps` (see the decisions log).

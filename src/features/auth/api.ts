@@ -23,6 +23,17 @@ export interface LoginInput {
   password: string;
 }
 
+export interface ProfileInput {
+  displayName?: string;
+  bio?: string | null;
+  timezone?: string;
+}
+
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export interface RegisterInput {
   email: string;
   password: string;
@@ -43,6 +54,14 @@ export const authApi = {
     api.post<AuthResponse>('/auth/register', input).then((r) => r.user),
 
   logout: () => api.post<void>('/auth/logout'),
+
+  logoutAll: () => api.post<void>('/auth/logout-all'),
+
+  updateProfile: (input: ProfileInput) => api.patch<User>('/users/me', input),
+
+  /** Other devices are logged out; this one receives fresh session cookies. */
+  changePassword: (input: ChangePasswordInput) =>
+    api.post<AuthResponse>('/auth/change-password', input).then((r) => r.user),
 
   forgotPassword: (email: string) =>
     api.post<MessageResponse>('/auth/forgot-password', { email }),

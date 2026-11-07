@@ -90,6 +90,10 @@ Browser ──fetch('/api/v1/health')──► Next.js (localhost:3000)
 | `/register`               | Create an account (password: at least 12 characters)                                             |
 | `/forgot-password`        | Request a reset email (same message whether or not the account exists)                           |
 | `/reset-password?token=…` | Choose a new password from the emailed link                                                      |
+| `/settings`               | Profile (name, bio, time zone), change password, log out of all devices                          |
+
+The **user menu** at the bottom of the sidebar shows who is logged in and has **Settings** and **Log out**.
+Loading it also checks the session as soon as any app page opens.
 
 How it works:
 
@@ -100,7 +104,9 @@ How it works:
 - **Route protection** (`src/proxy.ts`, rules in `src/lib/auth-routes.ts`): without the `ib_session`
   cookie, app pages redirect to `/login`; with it, login/register pages redirect to `/dashboard`.
   This is a convenience only. **The API is what actually protects data.**
-- Logging out does a full page reload so no personal data stays in memory.
+- Logging out (and "log out of all devices") does a full page reload via `hardNavigate()` so no personal
+  data stays in memory.
+- Changing your password keeps you logged in here and logs out your other devices.
 
 ### Trying it locally
 
@@ -127,7 +133,7 @@ src/
 │   ├── not-found.tsx         Friendly 404 page
 │   ├── icon.svg              Browser tab icon
 │   ├── globals.css           Design tokens (lavender theme) + Tailwind
-│   └── (app)/                Route group: pages with the sidebar layout
+│   └── (app)/                Route group: pages with the sidebar layout (settings is a real page)
 │       ├── layout.tsx        Sidebar + top bar shell
 │       └── dashboard/ ideas/ projects/ tasks/ calendar/ notes/ resources/ search/ settings/
 ├── components/
@@ -136,9 +142,9 @@ src/
 │   ├── shared/               Reusable building blocks: PageHeader, EmptyState
 │   └── brand/                Logo
 ├── components/forms/         TextField, PasswordField, SubmitButton, FormErrorAlert
-├── features/<feature>/       Feature code: API hooks, components, schemas (features/auth, features/system)
+├── features/<feature>/       Feature code: API hooks, components, schemas (auth, settings, system)
 ├── hooks/                    Generic React hooks
-├── lib/                      api-client (incl. session refresh), auth-routes, utils
+├── lib/                      api-client (incl. session refresh), auth-routes, navigation, time-zones, utils
 ├── proxy.ts                  Redirects between login and app pages
 ├── providers/                Client-side providers (TanStack Query, tooltips, toasts)
 └── test/                     Test helpers (renderWithProviders, jsonResponse)

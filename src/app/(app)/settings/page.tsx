@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import { Settings } from 'lucide-react';
-import { EmptyState } from '@/components/shared/empty-state';
 import { PageHeader } from '@/components/shared/page-header';
+import { SettingsContent } from '@/features/settings/components/settings-content';
 
 export const metadata: Metadata = { title: 'Settings' };
 
@@ -10,13 +9,9 @@ export default function SettingsPage() {
     <>
       <PageHeader
         title="Settings"
-        description="Your profile, account security and preferences."
+        description="Your profile, password and account security."
       />
-      <EmptyState
-        icon={Settings}
-        title="Settings are coming soon"
-        description="Profile and password come with accounts; themes and preferences follow later. (Milestone 1 and 8)"
-      />
+      <SettingsContent />
     </>
   );
 }

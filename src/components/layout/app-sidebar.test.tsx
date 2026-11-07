@@ -1,7 +1,12 @@
 import { screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { jsonResponse, renderWithProviders } from '@/test/render';
+import {
+  jsonResponse,
+  mockApi,
+  renderWithProviders,
+  testUser,
+} from '@/test/render';
 import { AppSidebar } from './app-sidebar';
 import { allNavItems, isNavItemActive } from './nav-items';
 
@@ -20,9 +25,10 @@ function renderSidebar() {
 
 describe('AppSidebar', () => {
   beforeEach(() => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      jsonResponse({ status: 'ok' }),
-    );
+    mockApi({
+      'GET /health': () => jsonResponse({ status: 'ok' }),
+      'GET /users/me': () => jsonResponse(testUser),
+    });
   });
 
   it('links to every section of the app', () => {
@@ -52,6 +58,14 @@ describe('AppSidebar', () => {
     renderSidebar();
 
     expect(await screen.findByText('API connected')).toBeInTheDocument();
+  });
+
+  it('shows who is logged in', async () => {
+    renderSidebar();
+
+    expect(await screen.findByText('Lucie Fifi')).toBeInTheDocument();
+    expect(screen.getByText('lucie@example.com')).toBeInTheDocument();
+    expect(screen.getByText('LF')).toBeInTheDocument(); // initials
   });
 });
 
