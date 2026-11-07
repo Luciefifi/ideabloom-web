@@ -80,7 +80,47 @@ Browser ──fetch('/api/v1/health')──► Next.js (localhost:3000)
   `api.patch`, `api.delete`.
 - API errors become an `ApiError` (with `status`, `message`, `messages`); connection failures become a
   `NetworkError`.
-- Because the browser only talks to one origin, login cookies (Milestone 1) work without CORS.
+- Because the browser only talks to one origin, login cookies work without CORS.
+
+## Authentication
+
+| Page                      | Purpose                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------ |
+| `/login`                  | Log in. Supports `?next=/some/page` to return after login (only paths on this site are followed) |
+| `/register`               | Create an account (password: at least 12 characters)                                             |
+| `/forgot-password`        | Request a reset email (same message whether or not the account exists)                           |
+| `/reset-password?token=…` | Choose a new password from the emailed link                                                      |
+| `/settings`               | Profile (name, bio, time zone), change password, log out of all devices                          |
+
+The **user menu** at the bottom of the sidebar shows who is logged in and has **Settings** and **Log out**.
+Loading it also checks the session as soon as any app page opens.
+
+How it works:
+
+- The API sets **httpOnly cookies**. The web app never sees or stores tokens in JavaScript.
+- **Staying logged in**: when a request returns `401`, `api-client.ts` calls `POST /auth/refresh` once
+  (shared by all requests failing at the same moment) and retries. If that fails, it logs out and
+  sends you to `/login?next=…`.
+- **Route protection** (`src/proxy.ts`, rules in `src/lib/auth-routes.ts`): without the `ib_session`
+  cookie, app pages redirect to `/login`; with it, login/register pages redirect to `/dashboard`.
+  This is a convenience only. **The API is what actually protects data.**
+- Logging out (and "log out of all devices") does a full page reload via `hardNavigate()` so no personal
+  data stays in memory.
+- Changing your password keeps you logged in here and logs out your other devices.
+
+### Trying it locally
+
+1. Start the API (`npm run start:dev` in ideabloom-api, with `npm run db:up`) and this app (`npm run dev`).
+2. Open <http://localhost:3000>. You're sent to `/login`. Create an account on `/register`.
+3. Forgot password: request a link, open Mailpit at <http://localhost:8025> and click the link.
+
+### Deployment note: rate limiting needs a trusted front proxy
+
+The API limits login attempts per visitor IP. Next.js rewrites **do not add** the visitor's IP to
+`X-Forwarded-For`, and they pass through a value sent by the browser unchanged. In production, put
+the app behind something that sets `X-Forwarded-For` reliably (the hosting platform's load balancer,
+or nginx/Caddy), and set the API's `TRUST_PROXY` to match. Otherwise all visitors share one limit,
+or the limit can be bypassed with a fake header.
 
 ## Project structure
 
@@ -89,10 +129,11 @@ src/
 ├── app/                      Routes (folders = URLs)
 │   ├── layout.tsx            Root layout: font, metadata, providers
 │   ├── page.tsx              "/" → redirects to /dashboard
+│   ├── (auth)/               login, register, forgot-password, reset-password (centred card layout)
 │   ├── not-found.tsx         Friendly 404 page
 │   ├── icon.svg              Browser tab icon
 │   ├── globals.css           Design tokens (lavender theme) + Tailwind
-│   └── (app)/                Route group: pages with the sidebar layout
+│   └── (app)/                Route group: pages with the sidebar layout (settings is a real page)
 │       ├── layout.tsx        Sidebar + top bar shell
 │       └── dashboard/ ideas/ projects/ tasks/ calendar/ notes/ resources/ search/ settings/
 ├── components/
@@ -100,9 +141,11 @@ src/
 │   ├── layout/               App shell: sidebar, top bar, navigation config
 │   ├── shared/               Reusable building blocks: PageHeader, EmptyState
 │   └── brand/                Logo
-├── features/<feature>/       Feature code: API hooks, components, schemas (e.g. features/system)
+├── components/forms/         TextField, PasswordField, SubmitButton, FormErrorAlert
+├── features/<feature>/       Feature code: API hooks, components, schemas (auth, settings, system)
 ├── hooks/                    Generic React hooks
-├── lib/                      api-client, utils
+├── lib/                      api-client (incl. session refresh), auth-routes, navigation, time-zones, utils
+├── proxy.ts                  Redirects between login and app pages
 ├── providers/                Client-side providers (TanStack Query, tooltips, toasts)
 └── test/                     Test helpers (renderWithProviders, jsonResponse)
 ```
