@@ -57,6 +57,20 @@ shows data from the API and sends the user's actions to the API.
 - The sidebar (shadcn `Sidebar`) collapses to icons on desktop (Ctrl/Cmd+B, or the rail) and becomes a
   slide-out panel on screens under 768px.
 
+## Ideas feature (`features/ideas`)
+
+- `filters.ts`: pure functions between URL params and an `IdeaFilters` object (unknown values ignored,
+  defaults left out of the URL). `use-idea-filters.ts` reads `useSearchParams` and writes with `router.replace`.
+- `use-ideas.ts`: query keys (`['ideas','list',filters]`, `['categories']`, `['tags']`), `useInfiniteQuery` for
+  "Load more" (with `keepPreviousData` so the list doesn't flash while filters change), `useCreateIdea`
+  (invalidates ideas, tags, categories), and an **optimistic** `useToggleFavorite` (snapshot → update cache →
+  roll back on error → refetch).
+- Search box: local state + `useDebouncedValue` (300 ms) + `useEffectEvent`, so clearing filters can't re-apply
+  stale text.
+- `idea-styles.ts`: labels and colours for statuses, priorities and the 8 category palette names
+  (dark-on-light pairs, well above 4.5:1).
+- Card: a single real link stretched over the card with `::after`; the ⭐ button sits above it (`z-10`).
+
 ## Design system
 
 Defined in `src/app/globals.css` as CSS variables, exposed to Tailwind with `@theme inline`.
@@ -109,3 +123,6 @@ browser (Playwright) are planned for Milestone 8.
 | 2026-11-07 | No `SidebarMenuSkeleton` (fixed-size skeleton instead)                              | It uses `Math.random()`, which Cache Components forbids during prerendering (build error).                                                            |
 | 2026-11-07 | `useWatch` instead of `watch()` (react-hook-form)                                   | `watch()` is flagged as incompatible with React Compiler memoization.                                                                                 |
 | 2026-11-07 | Native `<select>` for time zones                                                    | ~400 options; a native select is accessible, fast and keyboard-searchable on every device. "UTC" is added manually (not in `Intl.supportedValuesOf`). |
+| 2026-11-07 | Ideas filters in the URL; infinite query with "Load more"                           | Shareable/bookmarkable views; simpler than numbered pages on mobile.                                                                                  |
+| 2026-11-07 | Native `<select>`s for filters                                                      | Accessible and fast on every device; little code.                                                                                                     |
+| 2026-11-07 | Single responsive button label (`sr-only sm:not-sr-only`)                           | Two separate labels produced a doubled accessible name ("Add idea Add idea").                                                                         |

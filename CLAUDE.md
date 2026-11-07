@@ -44,5 +44,8 @@ inside this folder. At the start of a session, check its progress log to see whe
 - Tests mock `next/navigation` (useRouter/useSearchParams), fake the API with `mockApi({ 'GET /users/me': … })`
   and use `testUser`/`renderWithProviders` from `src/test/render.tsx`. Mock `@/lib/navigation` for logout flows.
 - Don't use shadcn's `SidebarMenuSkeleton` (Math.random breaks prerendering); use `useWatch`, not `watch()`.
+- Query keys live with their feature (e.g. `ideaKeys` in `features/ideas/use-ideas.ts`); invalidate by prefix
+  (`ideaKeys.all`). Optimistic updates: cancel → snapshot → setQueriesData → restore on error → invalidate.
+- Effects that call a callback with the latest props/state: use `useEffectEvent` (React 19.2+), not extra deps.
   Run `npm run typecheck` too: Vitest doesn't type-check, and the build does.
 - Don't install `@vitejs/plugin-react` or use `--legacy-peer-deps` (see the decisions log).
