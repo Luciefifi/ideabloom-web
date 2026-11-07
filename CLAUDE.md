@@ -7,17 +7,34 @@ It is UI only. All data and business logic come from the `ideabloom-api` REST ba
 the brief at `../docs/PROJECT_BRIEF.md`. Claude Code loads `../CLAUDE.md` automatically when started
 inside this folder. At the start of a session, check its progress log to see where we are.
 
+@AGENTS.md
+
 ## Rules (repeated here in case this repo is used on its own)
+
 - **Never** `git commit`, `git push`, force-push or pull with rebase. **Never** add Claude attribution or
   Co-authored-by lines. The owner commits and pushes everything.
 - Never work on `main`. Use `feature/*` or `fix/*` branches from `develop`.
 - Plan first and wait for approval before major changes. Explain decisions in simple English.
 - Don't duplicate backend business logic here. The frontend validates for user experience only.
 - The browser calls `/api/*` on this app's own origin; Next.js rewrites forward it to the API.
-- Lavender design system: primary `#9B7EDE`, soft `#EAE2FA`, background `#F7F4FC`, deep `#6F55AE`,
-  text `#242033`. Lavender is an accent; cards are white.
 - When you need API details, read `../ideabloom-api` docs (use `/add-dir ../ideabloom-api` if needed).
 - After each step, add an entry to the progress log in `../CLAUDE.md` (repo + branch + what's next).
 
 ## Commands
-To be added in M0 Step 3 (install, run, test).
+
+- `npm run dev`: http://localhost:3000 (the API should run on :4000 for live data)
+- `npm test`, `npm run typecheck`, `npm run lint`, `npm run format:check`, `npm run build`
+- Add UI components: `npx shadcn@4.23.0 add <name>`, then `npm run format` (shadcn writes its own style)
+
+## Conventions
+
+- Next.js 16 differs from older versions: check `node_modules/next/dist/docs/` before using an API.
+- shadcn/ui here is built on **Base UI**: compose with the `render` prop (e.g.
+  `<SidebarMenuButton render={<Link href="/x" />}>`), not `asChild`.
+- Colours: use semantic Tailwind classes (`bg-primary`, `text-muted-foreground`, `bg-lavender-soft`).
+  Never put white text on `#9B7EDE` (fails contrast). See `docs/ARCHITECTURE.md`.
+- API calls only through `src/lib/api-client.ts`; data fetching with TanStack Query hooks in
+  `src/features/<feature>/`.
+- Navigation lives in `src/components/layout/nav-items.ts`.
+- Use `PageHeader` and `EmptyState` from `src/components/shared/` for consistent pages.
+- Don't install `@vitejs/plugin-react` or use `--legacy-peer-deps` (see the decisions log).
