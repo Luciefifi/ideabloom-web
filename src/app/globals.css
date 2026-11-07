@@ -1,0 +1,187 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * IdeaBloom design tokens
+ * -----------------------
+ * Components never use raw hex colours. They use semantic names like
+ * `bg-primary` or `text-muted-foreground`, which point at the CSS variables
+ * below. To change the look (or add a dark theme) we only change variables,
+ * never components.
+ *
+ * Accessibility (WCAG AA needs 4.5:1 contrast for normal text):
+ *   - white on #9B7EDE is only 3.26:1, so it is used for accents
+ *     (focus rings, logo, progress, charts), not behind text.
+ *   - white on #6F55AE is 5.86:1, so it is used for buttons and links.
+ */
+
+@theme inline {
+  /* Brand palette, available as e.g. bg-lavender, text-lavender-deep */
+  --color-lavender: var(--lavender);
+  --color-lavender-soft: var(--lavender-soft);
+  --color-lavender-deep: var(--lavender-deep);
+
+  /* Semantic colours used by shadcn/ui components */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Typography: Inter is loaded in app/layout.tsx as --font-inter */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Rounded corners scale from one base value */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Light theme (default) */
+:root {
+  /* Brand */
+  --lavender: #9b7ede;
+  --lavender-soft: #eae2fa;
+  --lavender-deep: #6f55ae;
+
+  /* Surfaces & text */
+  --background: #f7f4fc;
+  --foreground: #242033;
+  --card: #ffffff;
+  --card-foreground: #242033;
+  --popover: #ffffff;
+  --popover-foreground: #242033;
+
+  /* Actions */
+  --primary: #6f55ae; /* buttons: white text passes AA */
+  --primary-foreground: #ffffff;
+  --secondary: #eae2fa;
+  --secondary-foreground: #4a3a7a;
+  --accent: #eae2fa;
+  --accent-foreground: #4a3a7a;
+
+  /* Supporting */
+  --muted: #f1edf8;
+  --muted-foreground: #6b6880; /* 5.36:1 on white, 4.93:1 on background */
+  --destructive: #d64545;
+  --success: #2f9e6e;
+  --warning: #c98a1a;
+  --border: #e7e1f3;
+  --input: #ddd5ee;
+  --ring: #9b7ede;
+
+  /* Charts: lavender family plus contrasting hues */
+  --chart-1: #9b7ede;
+  --chart-2: #6f55ae;
+  --chart-3: #5bb5a2;
+  --chart-4: #f2a65a;
+  --chart-5: #d3c4f3;
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #3a3550;
+  --sidebar-primary: #6f55ae;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eae2fa;
+  --sidebar-accent-foreground: #4a3a7a;
+  --sidebar-border: #ece7f6;
+  --sidebar-ring: #9b7ede;
+
+  --radius: 0.75rem;
+}
+
+/*
+ * Dark theme: a DRAFT so the structure is ready. It is not switched on yet;
+ * the theme toggle and final tuning come in Milestone 8 (Settings).
+ */
+.dark {
+  --lavender: #b39cf0;
+  --lavender-soft: #2e2645;
+  --lavender-deep: #c9b8f5;
+
+  --background: #16131f;
+  --foreground: #ece8f6;
+  --card: #1e1a2b;
+  --card-foreground: #ece8f6;
+  --popover: #1e1a2b;
+  --popover-foreground: #ece8f6;
+  --primary: #b39cf0;
+  --primary-foreground: #1a1528;
+  --secondary: #2e2645;
+  --secondary-foreground: #e2d9fb;
+  --accent: #2e2645;
+  --accent-foreground: #e2d9fb;
+  --muted: #262035;
+  --muted-foreground: #a9a3bd;
+  --destructive: #ef6b6b;
+  --success: #4cc394;
+  --warning: #e6ad4a;
+  --border: #2f2940;
+  --input: #3a3350;
+  --ring: #b39cf0;
+  --chart-1: #b39cf0;
+  --chart-2: #8b6fd6;
+  --chart-3: #6cc9b5;
+  --chart-4: #f2b36f;
+  --chart-5: #5a4b86;
+  --sidebar: #1a1625;
+  --sidebar-foreground: #d9d3ea;
+  --sidebar-primary: #b39cf0;
+  --sidebar-primary-foreground: #1a1528;
+  --sidebar-accent: #2e2645;
+  --sidebar-accent-foreground: #e2d9fb;
+  --sidebar-border: #2a2438;
+  --sidebar-ring: #b39cf0;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
