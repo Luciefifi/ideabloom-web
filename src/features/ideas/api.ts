@@ -1,6 +1,13 @@
 import { api } from '@/lib/api-client';
 import { filtersToParams, type IdeaFilters } from './filters';
-import type { Category, Idea, IdeaInput, IdeaPage, Tag } from './types';
+import type {
+  Category,
+  CategoryColor,
+  Idea,
+  IdeaInput,
+  IdeaPage,
+  Tag,
+} from './types';
 
 export const IDEAS_PAGE_SIZE = 20;
 
@@ -20,10 +27,21 @@ export const ideasApi = {
   remove: (id: string) => api.delete(`/ideas/${id}`),
 };
 
+export interface CategoryInput {
+  name?: string;
+  color?: CategoryColor;
+}
+
 export const categoriesApi = {
   list: () => api.get<Category[]>('/categories'),
+  create: (input: CategoryInput) => api.post<Category>('/categories', input),
+  update: (id: string, input: CategoryInput) =>
+    api.patch<Category>(`/categories/${id}`, input),
+  remove: (id: string) => api.delete(`/categories/${id}`),
 };
 
 export const tagsApi = {
   list: () => api.get<Tag[]>('/tags'),
+  rename: (id: string, name: string) => api.patch<Tag>(`/tags/${id}`, { name }),
+  remove: (id: string) => api.delete(`/tags/${id}`),
 };

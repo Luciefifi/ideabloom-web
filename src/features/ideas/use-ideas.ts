@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { errorMessage } from '@/components/forms/form-error-alert';
 import { categoriesApi, ideasApi, tagsApi } from './api';
 import type { IdeaFilters } from './filters';
-import type { IdeaInput, IdeaPage } from './types';
+import type { Idea, IdeaInput, IdeaPage } from './types';
 
 /**
  * Cache keys. Everything about ideas starts with ['ideas'], so one
@@ -105,5 +105,59 @@ export function useToggleFavorite() {
     },
 
     onSettled: () => queryClient.invalidateQueries({ queryKey: ideaKeys.all }),
+  });
+}
+
+export function useIdea(id: string) {
+  return useQuery({
+    queryKey: ideaKeys.detail(id),
+    queryFn: () => ideasApi.get(id),
+  });
+}
+
+/** After any change to one idea: refresh lists, counts and that idea's page. */
+function useIdeaChanged() {
+  const queryClient = useQueryClient();
+  return (idea?: Idea) => {
+    if (idea) queryClient.setQueryData(ideaKeys.detail(idea.id), idea);
+    void queryClient.invalidateQueries({ queryKey: ideaKeys.lists() });
+    void queryClient.invalidateQueries({ queryKey: tagKeys.all });
+    void queryClient.invalidateQueries({ queryKey: categoryKeys.all });
+  };
+}
+
+export function useUpdateIdea(id: string) {
+  const changed = useIdeaChanged();
+  return useMutation({
+    mutationFn: (input: IdeaInput) => ideasApi.update(id, input),
+    onSuccess: changed,
+  });
+}
+
+export function useArchiveIdea(id: string) {
+  const changed = useIdeaChanged();
+  return useMutation({
+    mutationFn: () => ideasApi.archive(id),
+    onSuccess: changed,
+  });
+}
+
+export function useRestoreIdea(id: string) {
+  const changed = useIdeaChanged();
+  return useMutation({
+    mutationFn: () => ideasApi.restore(id),
+    onSuccess: changed,
+  });
+}
+
+export function useDeleteIdea(id: string) {
+  const queryClient = useQueryClient();
+  const changed = useIdeaChanged();
+  return useMutation({
+    mutationFn: () => ideasApi.remove(id),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ideaKeys.detail(id) });
+      changed();
+    },
   });
 }
