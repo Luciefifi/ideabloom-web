@@ -57,6 +57,8 @@ import {
   useProject,
   useUpdateProject,
 } from '../use-projects';
+import { AttachedNotes } from '@/features/notes/components/attached-notes';
+import { AttachedResources } from '@/features/resources/components/attached-resources';
 import { ProjectTasks } from '@/features/tasks/components/project-tasks';
 import { MilestoneList } from './milestone-list';
 import { ProjectActivity } from './project-activity';
@@ -209,7 +211,8 @@ function ProjectDetail({ project }: { project: Project }) {
                   &ldquo;{project.title}&rdquo;, its{' '}
                   {plural(project.tasks.total, 'task')} (and their subtasks) and
                   its {plural(project.milestones.total, 'milestone')} will be
-                  deleted permanently. Linked ideas are kept
+                  deleted permanently. Linked ideas, notes and resources are
+                  kept
                   {project.sourceIdea
                     ? `, and "${project.sourceIdea.title}" goes back to Planned`
                     : ''}
@@ -341,6 +344,12 @@ function ProjectDetail({ project }: { project: Project }) {
           </Section>
         </div>
         <div className="space-y-6">
+          <Section title="Notes">
+            <AttachedNotes attachTo={{ projectId: project.id }} />
+          </Section>
+          <Section title="Resources">
+            <AttachedResources attachTo={{ projectId: project.id }} />
+          </Section>
           <Section title="Related ideas">
             <RelatedIdeas project={project} />
           </Section>

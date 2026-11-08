@@ -28,6 +28,10 @@ export function describeProjectActivity(entry: ActivityEntry): string {
       return `Completed task "${String(m.task)}"`;
     case 'task_reopened':
       return `Reopened task "${String(m.task)}"`;
+    case 'note_added':
+      return `Added note "${String(m.note)}"`;
+    case 'resource_added':
+      return `Added resource "${String(m.resource)}"`;
     case 'idea_linked':
       return `Linked the idea "${String(m.idea)}"`;
     case 'idea_unlinked':

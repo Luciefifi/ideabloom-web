@@ -3,6 +3,7 @@
 import { PencilIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { describeUsage } from '@/lib/usage';
 import {
   errorMessage,
   FormErrorAlert,
@@ -16,14 +17,12 @@ import { useDeleteTag, useRenameTag } from '../use-organize';
 import { ConfirmDelete } from './confirm-delete';
 import { normalizeTag, validateTag } from './tag-input';
 
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
-
 function TagRow({ tag }: { tag: Tag }) {
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(tag.name);
   const rename = useRenameTag();
   const remove = useDeleteTag();
-  const count = tag.ideaCount ?? 0;
+  const usage = describeUsage(tag);
   const problem = validateTag(normalizeTag(name), []);
 
   if (editing) {
@@ -85,9 +84,7 @@ function TagRow({ tag }: { tag: Tag }) {
   return (
     <li className="flex items-center gap-3 rounded-lg px-2 py-1.5 hover:bg-muted/60">
       <span className="flex-1 truncate font-medium">#{tag.name}</span>
-      <span className="text-sm text-muted-foreground">
-        {plural(count, 'idea')}
-      </span>
+      <span className="text-sm text-muted-foreground">{usage.short}</span>
       <Button
         variant="ghost"
         size="icon"
@@ -99,9 +96,9 @@ function TagRow({ tag }: { tag: Tag }) {
       <ConfirmDelete
         title={`Delete tag "${tag.name}"`}
         description={
-          count > 0
-            ? `It will be removed from ${plural(count, 'idea')}. The ideas themselves stay.`
-            : 'No ideas use this tag.'
+          usage.total > 0
+            ? `It will be removed from ${usage.text}. The items themselves stay.`
+            : 'Nothing uses this tag.'
         }
         pending={remove.isPending}
         onConfirm={(close) =>

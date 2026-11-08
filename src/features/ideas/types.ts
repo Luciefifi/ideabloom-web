@@ -35,12 +35,16 @@ export interface Category {
   name: string;
   color: CategoryColor;
   ideaCount?: number;
+  noteCount?: number;
+  resourceCount?: number;
 }
 
 export interface Tag {
   id: string;
   name: string;
   ideaCount?: number;
+  noteCount?: number;
+  resourceCount?: number;
 }
 
 export interface IdeaLink {

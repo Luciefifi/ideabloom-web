@@ -39,22 +39,29 @@ describe('CategoryManager', () => {
     );
   });
 
-  it('warns how many ideas will become uncategorized before deleting', async () => {
+  it('warns how many items will become uncategorized before deleting', async () => {
     mockApi({
       'GET /categories': () =>
         jsonResponse([
-          { id: 'c1', name: 'Health', color: 'emerald', ideaCount: 3 },
+          {
+            id: 'c1',
+            name: 'Health',
+            color: 'emerald',
+            ideaCount: 3,
+            noteCount: 2,
+            resourceCount: 0,
+          },
         ]),
     });
     renderWithProviders(<CategoryManager />);
 
-    expect(await screen.findByText('3 ideas')).toBeInTheDocument();
+    expect(await screen.findByText('3 ideas · 2 notes')).toBeInTheDocument();
     await userEvent.click(
       screen.getByRole('button', { name: 'Delete category "Health"' }),
     );
 
     expect(await screen.findByRole('alertdialog')).toHaveTextContent(
-      "3 ideas use this category. They won't be deleted; they'll become uncategorized.",
+      'Used by 3 ideas and 2 notes. Nothing else is deleted: they become uncategorized.',
     );
   });
 

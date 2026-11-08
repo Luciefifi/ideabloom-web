@@ -33,6 +33,8 @@ describe('ProfileForm', () => {
     expect(screen.getByText('2/500')).toBeInTheDocument();
   });
 
+  // Types key by key and picks from ~400 time zones: slow when the whole suite
+  // runs in parallel, so it gets more than the default 5 seconds.
   it('saves name, bio and time zone', async () => {
     const fetchMock = mockApi({
       'PATCH /users/me': () =>
@@ -68,7 +70,7 @@ describe('ProfileForm', () => {
         screen.getByRole('button', { name: 'Save changes' }),
       ).toBeDisabled(),
     );
-  });
+  }, 15_000);
 
   it('sends an emptied bio as null (cleared)', async () => {
     const fetchMock = mockApi({
