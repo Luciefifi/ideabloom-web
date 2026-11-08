@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
-import { CalendarDays } from 'lucide-react';
-import { EmptyState } from '@/components/shared/empty-state';
+import { Suspense } from 'react';
 import { PageHeader } from '@/components/shared/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
+import { CalendarView } from '@/features/calendar/components/calendar-view';
 
 export const metadata: Metadata = { title: 'Calendar' };
 
@@ -10,13 +11,12 @@ export default function CalendarPage() {
     <>
       <PageHeader
         title="Calendar"
-        description="Deadlines, milestones and due dates at a glance."
+        description="Task due dates, milestones and project deadlines, month by month."
       />
-      <EmptyState
-        icon={CalendarDays}
-        title="Nothing scheduled yet"
-        description="Task due dates, milestones and project deadlines will appear on your calendar. (Milestone 7)"
-      />
+      {/* CalendarView reads the month from the URL, which needs a Suspense boundary. */}
+      <Suspense fallback={<Skeleton className="h-[32rem] w-full rounded-xl" />}>
+        <CalendarView />
+      </Suspense>
     </>
   );
 }

@@ -26,8 +26,7 @@ export function PriorityIndicator({ priority }: { priority: IdeaPriority }) {
         className={cn('size-2 rounded-full', PRIORITY_DOTS[priority])}
         aria-hidden="true"
       />
-      {PRIORITY_LABELS[priority]}
-      <span className="sr-only"> priority</span>
+      {PRIORITY_LABELS[priority]} <span className="sr-only">priority</span>
     </span>
   );
 }

@@ -60,7 +60,11 @@ function DueDate({ dueDate, overdue }: { dueDate: string; overdue: boolean }) {
       )}
     >
       <CalendarIcon className="size-3" aria-hidden="true" />
-      {overdue && <span className="sr-only">Overdue, </span>}
+      {overdue && (
+        <>
+          <span className="sr-only">Overdue,</span>{' '}
+        </>
+      )}
       {formatDue(dueDate)}
     </span>
   );
