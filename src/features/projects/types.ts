@@ -83,3 +83,20 @@ export interface ConvertIdeaInput {
   startDate?: string | null;
   targetDate?: string | null;
 }
+
+export interface MilestoneInput {
+  title?: string;
+  description?: string | null;
+  dueDate?: string | null;
+}
+
+/** One entry of a project's history (GET /projects/:id/activity). */
+export interface ActivityEntry {
+  id: string;
+  entityType: 'idea' | 'project' | 'task';
+  entityId: string;
+  action: string;
+  summary: string;
+  metadata: Record<string, string | number | boolean | null>;
+  createdAt: string;
+}

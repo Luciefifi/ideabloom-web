@@ -88,6 +88,9 @@ shows data from the API and sends the user's actions to the API.
   native `<input type="date">`.
 - `ConvertIdeaDialog` (shadcn Dialog) on the idea page.
 - Overdue and progress are **calculated by the API**; the web app only displays them.
+- Project page (`ProjectDetailView`): every milestone / link / status mutation returns the full project, stored with
+  `setQueryData` (instant update) while lists, activity and ideas are invalidated (`useProjectChanged`).
+- `activity-text.ts` turns activity entries into sentences (pure function, unit-tested).
 
 ## Design system
 
@@ -150,3 +153,5 @@ browser (Playwright) are planned for Milestone 8.
 | 2026-11-07 | Native `<datalist>` for tag suggestions                                                               | Accessible autocomplete with no extra library.                                                                                                                         |
 | 2026-11-08 | Native date inputs + `'YYYY-MM-DD'` strings end to end; display via `parseISO` + `format`             | No date library pickers needed; no time-zone shifting.                                                                                                                 |
 | 2026-11-08 | Generic `useUrlFilters` extracted from the ideas code                                                 | Second use (projects) justified the abstraction.                                                                                                                       |
+| 2026-11-08 | Milestones: native checkboxes + up/down buttons (no drag and drop)                                    | Accessible by keyboard and screen reader with no extra library.                                                                                                        |
+| 2026-11-08 | Timestamps (`completedAt`) formatted from `new Date(...)`, never `.slice(0, 10)`                      | Slicing gives the UTC day, which can be off by one in the user's time zone.                                                                                            |
