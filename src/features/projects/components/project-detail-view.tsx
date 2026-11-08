@@ -57,6 +57,7 @@ import {
   useProject,
   useUpdateProject,
 } from '../use-projects';
+import { ProjectTasks } from '@/features/tasks/components/project-tasks';
 import { MilestoneList } from './milestone-list';
 import { ProjectActivity } from './project-activity';
 import { progressCaption, ProjectStatusBadge } from './project-card';
@@ -97,6 +98,8 @@ function Section({
     </section>
   );
 }
+
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
 export function ProjectDetailView() {
   const { id } = useParams<{ id: string }>();
@@ -143,9 +146,9 @@ function ProjectDetail({ project }: { project: Project }) {
 
   const done = project.status === 'completed';
   const closed = done || project.status === 'cancelled';
-  const allMilestonesDone =
-    project.milestones.total > 0 &&
-    project.milestones.completed === project.milestones.total;
+  // Everything progress is based on (tasks, else milestones) is done.
+  const { basis, completed, total } = project.progress;
+  const allWorkDone = basis !== 'none' && total > 0 && completed === total;
 
   const setStatus = (status: ProjectStatus) =>
     statusChange.mutate(
@@ -203,10 +206,10 @@ function ProjectDetail({ project }: { project: Project }) {
               <AlertDialogHeader>
                 <AlertDialogTitle>Delete this project?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  &ldquo;{project.title}&rdquo; and its{' '}
-                  {project.milestones.total} milestone
-                  {project.milestones.total === 1 ? '' : 's'} will be deleted
-                  permanently. Linked ideas are kept
+                  &ldquo;{project.title}&rdquo;, its{' '}
+                  {plural(project.tasks.total, 'task')} (and their subtasks) and
+                  its {plural(project.milestones.total, 'milestone')} will be
+                  deleted permanently. Linked ideas are kept
                   {project.sourceIdea
                     ? `, and "${project.sourceIdea.title}" goes back to Planned`
                     : ''}
@@ -242,11 +245,11 @@ function ProjectDetail({ project }: { project: Project }) {
         </div>
       </header>
 
-      {allMilestonesDone && !closed && (
+      {allWorkDone && !closed && (
         <Alert>
           <CheckCircle2Icon aria-hidden="true" />
           <AlertDescription className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span>All milestones are done. Mark the project as completed?</span>
+            <span>All {basis} are done. Mark the project as completed?</span>
             <Button
               size="sm"
               onClick={() => setStatus('completed')}
@@ -277,9 +280,11 @@ function ProjectDetail({ project }: { project: Project }) {
           <p className="text-xs text-muted-foreground">
             {done
               ? 'Completed projects count as 100%.'
-              : project.progress.basis === 'milestones'
-                ? 'Based on completed milestones. Once tasks arrive, progress will be based on tasks.'
-                : 'Add milestones to track progress.'}
+              : project.progress.basis === 'tasks'
+                ? 'Based on completed tasks (subtasks not counted).'
+                : project.progress.basis === 'milestones'
+                  ? 'Based on completed milestones. Add tasks and progress will be based on them.'
+                  : 'Add tasks or milestones to track progress.'}
           </p>
         </div>
         <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
@@ -327,9 +332,14 @@ function ProjectDetail({ project }: { project: Project }) {
       )}
 
       <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
-        <Section title="Milestones">
-          <MilestoneList project={project} />
-        </Section>
+        <div className="space-y-6">
+          <Section title="Tasks">
+            <ProjectTasks projectId={project.id} />
+          </Section>
+          <Section title="Milestones">
+            <MilestoneList project={project} />
+          </Section>
+        </div>
         <div className="space-y-6">
           <Section title="Related ideas">
             <RelatedIdeas project={project} />

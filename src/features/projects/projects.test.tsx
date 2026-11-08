@@ -35,6 +35,7 @@ function project(overrides: Partial<ProjectSummary> = {}): ProjectSummary {
     isOverdue: false,
     progress: { percent: 60, basis: 'milestones', completed: 3, total: 5 },
     milestones: { completed: 3, total: 5 },
+    tasks: { completed: 0, total: 0 },
     createdAt: '2026-11-01T00:00:00.000Z',
     updatedAt: '2026-11-07T00:00:00.000Z',
     ...overrides,

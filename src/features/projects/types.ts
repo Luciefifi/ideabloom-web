@@ -44,6 +44,8 @@ export interface ProjectSummary {
   isOverdue: boolean;
   progress: Progress;
   milestones: { completed: number; total: number };
+  /** Top-level tasks (subtasks don't count towards progress). */
+  tasks: { completed: number; total: number };
   createdAt: string;
   updatedAt: string;
 }

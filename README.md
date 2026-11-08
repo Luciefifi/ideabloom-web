@@ -162,15 +162,29 @@ or the limit can be bypassed with a fake header.
 ### Project page (`/projects/<id>`)
 
 - Header: status badge, category, priority; **quick status select**; **Edit** (side panel with the project form);
-  **Delete** (explains: milestones deleted, ideas kept, the source idea goes back to Planned).
-- **Progress**: big percentage + bar + "1 of 3 milestones", what it's based on, start/target/completed dates.
-- When every milestone is done: "Mark the project as completed?" (a suggestion; nothing is automatic).
+  **Delete** (explains: tasks and milestones deleted, ideas kept, the source idea goes back to Planned).
+- **Progress**: big percentage + bar + "2 of 4 tasks" (or "1 of 3 milestones" when the project has no tasks), what
+  it's based on, start/target/completed dates.
+- **Tasks**: quick add, tick off, open in the side panel, "Show completed tasks".
+- When every task (or milestone) is done: "Mark the project as completed?" (a suggestion; nothing is automatic).
 - **Milestones**: tick off/reopen (checkboxes), edit, delete (confirm), move up/down, add (title + optional due date);
   overdue milestones in red.
 - **Related ideas**: links to each idea with its status; "Started from this idea" for the source; link another idea,
   unlink (not the source).
 - **Activity**: the project's history as a timeline ("Completed milestone "Beta"", "Changed status from Planning to
   In progress"…).
+
+## Tasks page (`/tasks`)
+
+- **Views** (buttons): Pending (default), Overdue, Completed, All. Filters: project (or "No project"), priority,
+  search, sort. Everything lives in the URL; "Clear filters" keeps the chosen view.
+- **Quick add**: title + optional due date + optional project, press Enter.
+- **Rows**: checkbox (complete/reopen), priority, due date ("Today", "Tomorrow", "12 Nov"; red when overdue),
+  project link, "1/3 subtasks" (click to expand, tick subtasks off, add one).
+- **Side panel** (click a title): edit title, notes, status, priority, start/due dates (due ≥ start), project
+  (disabled for subtasks: they follow their parent), delete (says how many subtasks go with it).
+- "Overdue" comes from the API (your time zone); the web never decides it. Completing or editing a task refreshes
+  the projects too, because project progress is based on tasks.
 
 ## Project structure
 
