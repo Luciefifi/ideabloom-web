@@ -44,6 +44,9 @@ export function BarsChart({
     <div aria-hidden="true" className="h-48 w-full">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
+          // The numbers are offered as text instead, so the chart itself stays
+          // out of the keyboard order (Recharts adds a keyboard layer by default).
+          accessibilityLayer={false}
           data={data}
           layout={rows ? 'vertical' : 'horizontal'}
           margin={{ top: 4, right: 8, bottom: 0, left: rows ? 8 : -24 }}

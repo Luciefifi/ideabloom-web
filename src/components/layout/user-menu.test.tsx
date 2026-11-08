@@ -31,7 +31,7 @@ describe('UserMenu', () => {
 
     await userEvent.click(
       await screen.findByRole('button', {
-        name: 'Account menu for Lucie Fifi',
+        name: /^Account menu: Lucie Fifi/,
       }),
     );
     await userEvent.click(
@@ -51,7 +51,7 @@ describe('UserMenu', () => {
 
     await userEvent.click(
       await screen.findByRole('button', {
-        name: 'Account menu for Lucie Fifi',
+        name: /^Account menu: Lucie Fifi/,
       }),
     );
 

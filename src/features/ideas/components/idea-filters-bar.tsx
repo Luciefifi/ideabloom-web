@@ -190,7 +190,10 @@ export function IdeaFiltersBar({
           variant="outline"
           aria-pressed={filters.favorite}
           onClick={() => onChange('favorite', !filters.favorite)}
-          className={cn(filters.favorite && 'border-amber-300 bg-amber-50')}
+          className={cn(
+            filters.favorite &&
+              'border-amber-300 bg-amber-50 dark:border-amber-500/50 dark:bg-amber-500/10',
+          )}
         >
           <StarIcon
             className={cn(filters.favorite && 'fill-amber-400 text-amber-500')}

@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ApiError } from '@/lib/api-client';
+import { useTheme } from '@/hooks/use-theme';
 import { summaryKeys } from '@/lib/summary-keys';
 
 function createQueryClient() {
@@ -45,13 +46,13 @@ function createQueryClient() {
 export function AppProviders({ children }: { children: React.ReactNode }) {
   // useState makes sure each browser tab gets exactly one QueryClient.
   const [queryClient] = useState(createQueryClient);
+  const { resolved } = useTheme();
 
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         {children}
-        {/* Forced to light until the dark theme ships in Milestone 8 */}
-        <Toaster theme="light" position="bottom-right" richColors />
+        <Toaster theme={resolved} position="bottom-right" richColors />
       </TooltipProvider>
     </QueryClientProvider>
   );

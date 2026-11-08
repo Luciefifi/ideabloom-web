@@ -3,6 +3,9 @@
 import { FormErrorAlert } from '@/components/forms/form-error-alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCurrentUser } from '@/features/auth/use-auth';
+import { useHydrated } from '@/hooks/use-hydrated';
+import { DeleteAccount, DownloadData } from './account-data';
+import { AppearanceForm } from './appearance-form';
 import { ChangePasswordForm } from './change-password-form';
 import { ProfileForm } from './profile-form';
 import { SessionsCard } from './sessions-card';
@@ -10,8 +13,10 @@ import { SettingsSection } from './settings-section';
 
 export function SettingsContent() {
   const { data: user, isPending, error } = useCurrentUser();
+  const hydrated = useHydrated();
 
-  if (isPending) {
+  // Same as the server on the first render (see useHydrated).
+  if (isPending || !hydrated) {
     return (
       <div className="space-y-4" aria-busy="true" aria-label="Loading settings">
         <Skeleton className="h-64 w-full rounded-xl" />
@@ -42,19 +47,31 @@ export function SettingsContent() {
       </SettingsSection>
 
       <SettingsSection
-        title="Sessions"
-        description="Devices where you're currently logged in."
+        title="Appearance & preferences"
+        description="How IdeaBloom looks, and where it opens."
+      >
+        <AppearanceForm user={user} />
+      </SettingsSection>
+
+      <SettingsSection
+        title="Signed-in devices"
+        description="Where you're logged in right now."
       >
         <SessionsCard />
       </SettingsSection>
 
       <SettingsSection
-        title="Appearance & preferences"
-        description="Theme and app preferences."
+        title="Your data"
+        description="Take a copy of everything you've created."
       >
-        <p className="text-sm text-muted-foreground">
-          Coming in Milestone 8: dark mode and app preferences.
-        </p>
+        <DownloadData />
+      </SettingsSection>
+
+      <SettingsSection
+        title="Delete account"
+        description="Permanently remove your account and all its content."
+      >
+        <DeleteAccount />
       </SettingsSection>
     </div>
   );

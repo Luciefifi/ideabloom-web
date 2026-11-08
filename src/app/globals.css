@@ -99,7 +99,7 @@
   /* Supporting */
   --muted: #f1edf8;
   --muted-foreground: #6b6880; /* 5.36:1 on white, 4.93:1 on background */
-  --destructive: #d64545;
+  --destructive: #c53030; /* 5.47:1 on white; was #d64545 (4.38:1, too light for small text) */
   --success: #2f9e6e;
   --warning: #c98a1a;
   --border: #e7e1f3;
@@ -149,7 +149,7 @@
   --accent-foreground: #e2d9fb;
   --muted: #262035;
   --muted-foreground: #a9a3bd;
-  --destructive: #ef6b6b;
+  --destructive: #f69494; /* 5.28:1+ on every dark background it is used on */
   --success: #4cc394;
   --warning: #e6ad4a;
   --border: #2f2940;

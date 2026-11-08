@@ -8,6 +8,7 @@ import {
   PinOffIcon,
   SearchXIcon,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -35,7 +36,19 @@ import { cn } from '@/lib/utils';
 import { DEFAULT_NOTE_TITLE } from '../note-styles';
 import type { Note, NoteInput } from '../types';
 import { useDeleteNote, useNote, useUpdateNote } from '../use-notes';
-import { NoteEditor } from './note-editor';
+// The editor (Tiptap) is large: it's downloaded only when a note is opened.
+const NoteEditor = dynamic(
+  () => import('./note-editor').then((m) => m.NoteEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <Skeleton
+        className="h-[50vh] w-full rounded-xl"
+        aria-label="Loading editor"
+      />
+    ),
+  },
+);
 
 function BackLink() {
   return (

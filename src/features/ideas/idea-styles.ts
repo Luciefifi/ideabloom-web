@@ -13,10 +13,11 @@ export const STATUS_LABELS: Record<IdeaStatus, string> = {
 };
 
 export const STATUS_STYLES: Record<IdeaStatus, string> = {
-  inbox: 'bg-slate-100 text-slate-700',
-  exploring: 'bg-sky-100 text-sky-800',
+  inbox: 'bg-slate-100 text-slate-700 dark:bg-slate-400/15 dark:text-slate-300',
+  exploring: 'bg-sky-100 text-sky-800 dark:bg-sky-400/15 dark:text-sky-300',
   planned: 'bg-lavender-soft text-lavender-deep',
-  converted: 'bg-emerald-100 text-emerald-800',
+  converted:
+    'bg-emerald-100 text-emerald-800 dark:bg-emerald-400/15 dark:text-emerald-300',
 };
 
 export const PRIORITY_LABELS: Record<IdeaPriority, string> = {
@@ -39,13 +40,34 @@ export const CATEGORY_STYLES: Record<
   { chip: string; dot: string }
 > = {
   lavender: { chip: 'bg-lavender-soft text-lavender-deep', dot: 'bg-lavender' },
-  rose: { chip: 'bg-rose-100 text-rose-800', dot: 'bg-rose-500' },
-  amber: { chip: 'bg-amber-100 text-amber-900', dot: 'bg-amber-500' },
-  emerald: { chip: 'bg-emerald-100 text-emerald-800', dot: 'bg-emerald-500' },
-  sky: { chip: 'bg-sky-100 text-sky-800', dot: 'bg-sky-500' },
-  teal: { chip: 'bg-teal-100 text-teal-800', dot: 'bg-teal-500' },
-  orange: { chip: 'bg-orange-100 text-orange-800', dot: 'bg-orange-500' },
-  slate: { chip: 'bg-slate-100 text-slate-700', dot: 'bg-slate-500' },
+  rose: {
+    chip: 'bg-rose-100 text-rose-800 dark:bg-rose-400/15 dark:text-rose-300',
+    dot: 'bg-rose-500',
+  },
+  amber: {
+    chip: 'bg-amber-100 text-amber-900 dark:bg-amber-400/15 dark:text-amber-300',
+    dot: 'bg-amber-500',
+  },
+  emerald: {
+    chip: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-400/15 dark:text-emerald-300',
+    dot: 'bg-emerald-500',
+  },
+  sky: {
+    chip: 'bg-sky-100 text-sky-800 dark:bg-sky-400/15 dark:text-sky-300',
+    dot: 'bg-sky-500',
+  },
+  teal: {
+    chip: 'bg-teal-100 text-teal-800 dark:bg-teal-400/15 dark:text-teal-300',
+    dot: 'bg-teal-500',
+  },
+  orange: {
+    chip: 'bg-orange-100 text-orange-800 dark:bg-orange-400/15 dark:text-orange-300',
+    dot: 'bg-orange-500',
+  },
+  slate: {
+    chip: 'bg-slate-100 text-slate-700 dark:bg-slate-400/15 dark:text-slate-300',
+    dot: 'bg-slate-500',
+  },
 };
 
 /** Falls back to lavender if the API ever sends an unknown colour. */

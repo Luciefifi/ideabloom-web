@@ -11,12 +11,14 @@ import {
   TriangleAlertIcon,
   type LucideIcon,
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { FormErrorAlert } from '@/components/forms/form-error-alert';
 import { ProgressBar } from '@/components/shared/progress-bar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useCurrentUser } from '@/features/auth/use-auth';
+import { useHydrated } from '@/hooks/use-hydrated';
 import { StatusBadge } from '@/features/ideas/components/idea-badges';
 import { QuickCapture } from '@/features/ideas/components/quick-capture';
 import { STATUS_LABELS } from '@/features/ideas/idea-styles';
@@ -33,7 +35,11 @@ import {
   useRecentActivity,
   useRecentIdeas,
 } from '../use-dashboard';
-import { BarsChart } from './dashboard-charts';
+// Recharts is large: the dashboard downloads it after the numbers are shown.
+const BarsChart = dynamic(
+  () => import('./dashboard-charts').then((m) => m.BarsChart),
+  { ssr: false, loading: () => <Skeleton className="h-48 w-full" /> },
+);
 
 function Card({
   title,
@@ -84,10 +90,11 @@ function greetingFor(hour: number): string {
 
 function Greeting({ today }: { today?: string }) {
   const user = useCurrentUser();
+  const hydrated = useHydrated(); // the name may already be cached: see useHydrated
   // The page is pre-rendered ahead of time, so the clock is only read once the
   // dashboard data has loaded in the browser (`today` is set); before that: "Welcome back".
   const greeting = today ? greetingFor(new Date().getHours()) : 'Welcome back';
-  const name = user.data?.displayName?.trim();
+  const name = hydrated ? user.data?.displayName?.trim() : undefined;
   return (
     <header className="space-y-1">
       <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">

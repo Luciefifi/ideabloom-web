@@ -38,6 +38,10 @@ export const testUser = {
   displayName: 'Lucie Fifi',
   bio: null as string | null,
   timezone: 'UTC',
+  preferences: {
+    theme: 'system' as const,
+    startPage: 'dashboard' as 'dashboard' | 'ideas' | 'tasks',
+  },
   createdAt: '2026-11-07T00:00:00.000Z',
 };
 
