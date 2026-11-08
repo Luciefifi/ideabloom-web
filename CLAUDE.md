@@ -61,3 +61,7 @@ inside this folder. At the start of a session, check its progress log to see whe
   branches that run after client data has loaded (or in effects/handlers). The build fails otherwise.
 - Summary queries (dashboard, activity feed) use `summaryKeys` (`src/lib/summary-keys.ts`); they are invalidated
   automatically after every successful mutation.
+- Screen-reader-only text: never start or end an `sr-only` span with a space; put `{' '}` between elements instead.
+- shadcn components here import `cn` from the `cn` package (shadcn's official one, since M0); keep generated files as they are.
+  When `shadcn add` asks to overwrite an existing component, answer **no** (`yes n | npx shadcn@4.23.0 add …`).
+- Search text from the API contains highlight markers: render it with `Highlighted`, and use `plainText()` for URLs/labels.

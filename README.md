@@ -186,6 +186,25 @@ or the limit can be bypassed with a fake header.
 - "Overdue" comes from the API (your time zone); the web never decides it. Completing or editing a task refreshes
   the projects too, because project progress is based on tasks.
 
+## Calendar (`/calendar`)
+
+- Month grid (weeks start on Monday) on tablets and larger; a day-by-day agenda on phones. The month is in the URL
+  (`/calendar?month=2026-12`); ‹ / Today / › move between months.
+- Shows task due dates (subtasks too, "part of …"), milestones, project starts and targets. Done items are faded with
+  a tick; overdue ones are red (decided by the API in your time zone). Today's date is highlighted.
+- A task opens in the task side panel; milestones and project dates open the project.
+- Data: `GET /calendar?from&to` for the visible weeks. Refreshed after any change (`summaryKeys.calendar`).
+
+## Search (Ctrl + K and `/search`)
+
+- **Ctrl + K** (Cmd + K on a Mac) or the search button in the top bar opens quick search: results appear while you type,
+  grouped by type; arrow keys + Enter open one; "See all results" goes to the search page.
+- **`/search?q=…`**: results grouped by type with snippets, an All / Ideas / Projects / Tasks / Notes / Resources switch
+  (`type` in the URL, up to 20 results), and "Include archived ideas".
+- Matching words are highlighted with `<mark>`. The API marks them with private-use characters (never HTML);
+  `Highlighted` (`src/features/search/highlight.tsx`) turns them into React elements, so text is never run as HTML.
+- Tasks and resources open their list filtered to that title (they have no page of their own).
+
 ## Dashboard (`/dashboard`)
 
 - Greeting with your name and today's date (in your time zone, from the API).

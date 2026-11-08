@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { Suspense } from 'react';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { SearchDialog } from '@/features/search/components/search-dialog';
 import { allNavItems, isNavItemActive } from './nav-items';
 
 function SectionTitle() {
@@ -24,6 +25,7 @@ export function TopBar() {
           <SectionTitle />
         </Suspense>
       </span>
+      <SearchDialog />
     </header>
   );
 }

@@ -38,3 +38,15 @@ Object.defineProperty(window, 'IntersectionObserver', {
   writable: true,
   value: IntersectionObserverStub,
 });
+
+// Used by the search dialog's list (cmdk) to size and scroll the highlighted result.
+class ResizeObserverStub {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Object.defineProperty(window, 'ResizeObserver', {
+  writable: true,
+  value: ResizeObserverStub,
+});
+Element.prototype.scrollIntoView = function scrollIntoView() {};
