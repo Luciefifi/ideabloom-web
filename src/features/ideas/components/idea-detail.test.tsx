@@ -22,6 +22,7 @@ const idea: Idea = {
   category: { id: 'cat-1', name: 'Health', color: 'emerald' },
   tags: [{ id: 't1', name: 'mobile' }],
   links: [{ id: 'l1', url: 'https://example.com/a', label: 'Article' }],
+  project: null,
   createdAt: '2026-11-01T10:00:00.000Z',
   updatedAt: '2026-11-07T10:00:00.000Z',
 };

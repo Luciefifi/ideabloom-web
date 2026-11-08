@@ -141,11 +141,23 @@ or the limit can be bypassed with a fake header.
 - ⭐ favourite, **Archive** (with Undo) / **Restore**, **Delete** (asks for confirmation; permanent).
 - "Idea not found" for deleted, mistyped or other people's ideas.
 
+- **Convert to project** (idea page): dialog with title and dates; opens the new project. Converted ideas show
+  **Open project** instead.
+
 ### Organize (`/ideas/organize`)
 
 - Categories: add, rename, recolour (8-colour palette), delete. Deleting warns how many ideas will become
   uncategorized; the ideas are kept.
 - Tags: rename or delete (removed from ideas; the ideas are kept), with idea counts.
+
+## Projects page (`/projects`)
+
+- Active projects by default (status filter: _All projects_ or one status), plus priority, category, search and sort
+  (recently updated, target date, most progress, title, newest). Filters live in the URL.
+- Cards: status, category, priority, **progress bar** with "3 of 5 milestones", target date (red **Overdue** when the API
+  says so), milestone count.
+- **New project** side panel (title, goals, description, status, priority, category, start/target dates).
+- Dates are plain `YYYY-MM-DD` and displayed with `formatDay()` (no time-zone shift).
 
 ## Project structure
 

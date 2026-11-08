@@ -6,6 +6,7 @@ import {
   ArchiveRestoreIcon,
   ArrowLeftIcon,
   ExternalLinkIcon,
+  FolderKanbanIcon,
   SearchXIcon,
   StarIcon,
   Trash2Icon,
@@ -34,6 +35,7 @@ import {
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Spinner } from '@/components/ui/spinner';
+import { ConvertIdeaDialog } from '@/features/projects/components/convert-idea-dialog';
 import { ApiError } from '@/lib/api-client';
 import { cn } from '@/lib/utils';
 import { ideaToFormValues } from '../idea-form-schema';
@@ -128,6 +130,17 @@ function IdeaDetail({ idea }: { idea: Idea }) {
         </div>
 
         <div className="flex flex-wrap gap-2">
+          {idea.project ? (
+            <Link
+              href={`/projects/${idea.project.id}`}
+              className={buttonVariants({ variant: 'outline' })}
+            >
+              <FolderKanbanIcon aria-hidden="true" />
+              Open project
+            </Link>
+          ) : (
+            idea.status !== 'converted' && <ConvertIdeaDialog idea={idea} />
+          )}
           <Button
             variant="outline"
             aria-pressed={idea.isFavorite}
