@@ -47,6 +47,7 @@ function project(overrides: Partial<Project> = {}): Project {
       total: milestoneList.length,
     },
     milestones: { completed, total: milestoneList.length },
+    tasks: { completed: 0, total: 0 },
     description: 'A helper for gardeners',
     goals: 'Beta with 20 gardeners',
     sourceIdea: { id: 'i1', title: 'Plant app' },
@@ -62,6 +63,11 @@ function project(overrides: Partial<Project> = {}): Project {
 
 const base = (p: Project = project()) => ({
   'GET /projects/p1': () => jsonResponse(p),
+  'GET /tasks?projectId=p1&page=1&pageSize=25': () =>
+    jsonResponse({
+      data: [],
+      meta: { page: 1, pageSize: 25, total: 0, totalPages: 0 },
+    }),
   'GET /projects/p1/activity?limit=50': () =>
     jsonResponse([
       {

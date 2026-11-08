@@ -26,13 +26,15 @@ export function ProjectStatusBadge({ status }: { status: ProjectStatus }) {
   );
 }
 
-/** "3 of 5 milestones" / "No milestones yet". */
+/** "2 of 4 tasks" / "3 of 5 milestones" / "Nothing to track yet". */
 export function progressCaption(
   project: Pick<ProjectSummary, 'progress' | 'status'>,
 ): string {
   const { basis, completed, total } = project.progress;
   if (basis === 'none')
-    return project.status === 'completed' ? 'Completed' : 'No milestones yet';
+    return project.status === 'completed'
+      ? 'Completed'
+      : 'Nothing to track yet';
   return `${completed} of ${total} ${basis}`;
 }
 

@@ -45,5 +45,5 @@ export function useUrlFilters<F extends object>(options: {
     [defaults, setFilters],
   );
 
-  return { filters, updateFilter, clearFilters };
+  return { filters, setFilters, updateFilter, clearFilters };
 }
