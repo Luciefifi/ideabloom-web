@@ -181,7 +181,7 @@ function DeadlineList({
                 aria-hidden="true"
               />
               <span className="min-w-0 flex-1">
-                <span className="sr-only">{DEADLINE_NOUNS[d.kind]}: </span>
+                <span className="sr-only">{DEADLINE_NOUNS[d.kind]}:</span>{' '}
                 <span className="block truncate text-sm font-medium">
                   {d.title}
                 </span>
