@@ -8,6 +8,14 @@ import type { NextConfig } from 'next';
 const apiUrl = process.env.API_URL ?? 'http://localhost:4000';
 const isDev = process.env.NODE_ENV === 'development';
 
+// On Vercel (which sets VERCEL=1), stop the build instead of silently forwarding
+// to localhost, and never send login cookies to the API over plain HTTP.
+if (process.env.VERCEL && !apiUrl.startsWith('https://')) {
+  throw new Error(
+    "API_URL must be set to the API's https:// address in the Vercel project settings.",
+  );
+}
+
 /**
  * Content-Security-Policy: the browser only loads scripts, styles, fonts and
  * images from this site, only talks to this site, can't be framed by other

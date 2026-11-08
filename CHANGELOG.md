@@ -3,6 +3,17 @@
 All notable changes, newest first. Versions follow [semantic versioning](https://semver.org):
 `MAJOR.MINOR.PATCH`. Each release is an annotated Git tag on `main`.
 
+## [1.0.1] - Unreleased
+
+### Changed
+
+- Ready for Vercel: `package.json` pins Node 22 (`^22.13.0`), `vercel.json` runs the server code in Frankfurt
+  (`fra1`), and a Vercel build stops with a clear message if `API_URL` is missing or isn't `https://`.
+
+### Docs
+
+- `docs/DEPLOYMENT.md`: step-by-step deployment on Vercel, with checks after deploying.
+
 ## [1.0.0] - 2026-11-08
 
 ### Added

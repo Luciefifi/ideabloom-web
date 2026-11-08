@@ -48,9 +48,9 @@ shows whether the web app can reach the API:
 Copy `.env.example` to `.env.local` only if you need to change something. The defaults work for local
 development.
 
-| Variable  | Default                 | Description                                                          |
-| --------- | ----------------------- | -------------------------------------------------------------------- |
-| `API_URL` | `http://localhost:4000` | Where the NestJS API runs. Server-side only. **Read at build time.** |
+| Variable  | Default                 | Description                                                                                                                                                                                                |
+| --------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `API_URL` | `http://localhost:4000` | Where the NestJS API runs. Server-side only. **Read at build time.** On Vercel it must be the API's `https://` address (the build stops otherwise). Deployment: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) |
 
 ## Scripts
 
