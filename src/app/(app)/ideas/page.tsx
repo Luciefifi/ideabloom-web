@@ -1,7 +1,12 @@
 import type { Metadata } from 'next';
-import { Lightbulb } from 'lucide-react';
-import { EmptyState } from '@/components/shared/empty-state';
+import { Settings2Icon } from 'lucide-react';
+import Link from 'next/link';
+import { Suspense } from 'react';
 import { PageHeader } from '@/components/shared/page-header';
+import { buttonVariants } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { IdeasView } from '@/features/ideas/components/ideas-view';
+import { NewIdeaSheet } from '@/features/ideas/components/new-idea-sheet';
 
 export const metadata: Metadata = { title: 'Ideas' };
 
@@ -10,13 +15,24 @@ export default function IdeasPage() {
     <>
       <PageHeader
         title="Ideas"
-        description="Capture ideas quickly and explore them when you are ready."
+        description="Capture ideas quickly and explore them when you're ready."
+        actions={
+          <>
+            <Link
+              href="/ideas/organize"
+              className={buttonVariants({ variant: 'outline' })}
+            >
+              <Settings2Icon aria-hidden="true" />
+              Organize
+            </Link>
+            <NewIdeaSheet />
+          </>
+        }
       />
-      <EmptyState
-        icon={Lightbulb}
-        title="No ideas yet"
-        description="Ideas are the heart of IdeaBloom. Quick capture, tags, categories, favourites and archiving are coming next. (Milestone 2)"
-      />
+      {/* IdeasView reads the filters from the URL, which needs a Suspense boundary. */}
+      <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+        <IdeasView />
+      </Suspense>
     </>
   );
 }

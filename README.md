@@ -122,6 +122,31 @@ the app behind something that sets `X-Forwarded-For` reliably (the hosting platf
 or nginx/Caddy), and set the API's `TRUST_PROXY` to match. Otherwise all visitors share one limit,
 or the limit can be bypassed with a fake header.
 
+## Ideas page (`/ideas`)
+
+- **Quick capture**: type a title, press Enter, and the idea is saved to the Inbox (focus stays for the next one).
+- **Search** waits until typing pauses (300 ms), then searches titles and descriptions.
+- **Filters**: status, priority, category, tag, active/archived, sort and favourites. All of them are in the URL
+  (`/ideas?status=exploring&favorite=true`), so the back button works and views can be bookmarked.
+- **Cards** show status, category colour, priority, tags, link count and "Updated 2 hours ago".
+  The ⭐ updates instantly (optimistic) and is undone with a message if saving fails.
+- **Load more** fetches the next 20.
+- Separate empty states for "No ideas yet" and "No ideas match these filters".
+- **New idea** (header button): every field in a side panel.
+
+### Idea page (`/ideas/<id>`)
+
+- Edit title, description, status, priority, category, **tags** (type + Enter/comma; suggestions from existing
+  tags; Backspace removes the last) and **links** (add/remove rows; `http(s)://` only).
+- ⭐ favourite, **Archive** (with Undo) / **Restore**, **Delete** (asks for confirmation; permanent).
+- "Idea not found" for deleted, mistyped or other people's ideas.
+
+### Organize (`/ideas/organize`)
+
+- Categories: add, rename, recolour (8-colour palette), delete. Deleting warns how many ideas will become
+  uncategorized; the ideas are kept.
+- Tags: rename or delete (removed from ideas; the ideas are kept), with idea counts.
+
 ## Project structure
 
 ```
