@@ -57,3 +57,7 @@ inside this folder. At the start of a session, check its progress log to see whe
 - Autosave goes through `useAutosave` (`src/hooks`). Don't re-key the editor on `updatedAt` (it would reset while typing).
 - Queries that return a plain page must not live under a key that another hook rewrites as infinite data
   (e.g. `ideaKeys.lists()`); use a separate key such as `['ideas', 'options']`.
+- Don't call `new Date()` / `Date.now()` while rendering a page that can be pre-rendered; read the clock only in
+  branches that run after client data has loaded (or in effects/handlers). The build fails otherwise.
+- Summary queries (dashboard, activity feed) use `summaryKeys` (`src/lib/summary-keys.ts`); they are invalidated
+  automatically after every successful mutation.

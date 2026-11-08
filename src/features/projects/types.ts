@@ -95,7 +95,7 @@ export interface MilestoneInput {
 /** One entry of a project's history (GET /projects/:id/activity). */
 export interface ActivityEntry {
   id: string;
-  entityType: 'idea' | 'project' | 'task';
+  entityType: 'idea' | 'project' | 'task' | 'note' | 'resource';
   entityId: string;
   action: string;
   summary: string;

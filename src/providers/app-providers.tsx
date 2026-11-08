@@ -1,13 +1,26 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  MutationCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { ApiError } from '@/lib/api-client';
+import { summaryKeys } from '@/lib/summary-keys';
 
 function createQueryClient() {
-  return new QueryClient({
+  const queryClient: QueryClient = new QueryClient({
+    // After any successful change, the dashboard and activity feed are out of date.
+    mutationCache: new MutationCache({
+      onSuccess: () => {
+        for (const queryKey of Object.values(summaryKeys)) {
+          void queryClient.invalidateQueries({ queryKey });
+        }
+      },
+    }),
     defaultOptions: {
       queries: {
         // Data is considered fresh for 30s, so switching pages doesn't refetch everything.
@@ -20,6 +33,7 @@ function createQueryClient() {
       },
     },
   });
+  return queryClient;
 }
 
 /**
