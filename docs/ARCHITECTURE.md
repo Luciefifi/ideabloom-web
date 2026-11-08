@@ -78,6 +78,20 @@ shows data from the API and sends the user's actions to the API.
 - Organize page: `CategoryManager` (inline editor + `ColorPicker` = radio inputs styled as swatches) and
   `TagManager`; deletions go through `ConfirmDelete` (AlertDialog).
 
+## Projects feature (`features/projects`)
+
+- Same layering as ideas: `types.ts`, `filters.ts` (URL ⇄ filters; "all" → `scope=all` for the API), `api.ts`,
+  `use-projects.ts` (`projectKeys`, infinite list, `useCreateProject`, `useConvertIdea` which refreshes ideas too).
+- `hooks/use-url-filters.ts`: generic URL-filters hook now shared by Ideas and Projects.
+- `components/shared/progress-bar.tsx`: accessible `role="progressbar"` with `aria-valuenow`.
+- `ProjectForm` + `project-form-schema.ts` (zod refine: target ≥ start) shared by "New project" and editing (part 2);
+  native `<input type="date">`.
+- `ConvertIdeaDialog` (shadcn Dialog) on the idea page.
+- Overdue and progress are **calculated by the API**; the web app only displays them.
+- Project page (`ProjectDetailView`): every milestone / link / status mutation returns the full project, stored with
+  `setQueryData` (instant update) while lists, activity and ideas are invalidated (`useProjectChanged`).
+- `activity-text.ts` turns activity entries into sentences (pure function, unit-tested).
+
 ## Design system
 
 Defined in `src/app/globals.css` as CSS variables, exposed to Tailwind with `@theme inline`.
@@ -137,3 +151,7 @@ browser (Playwright) are planned for Milestone 8.
 | 2026-11-07 | `usePathname` users (nav highlight, top bar title) wrapped in Suspense with non-highlighted fallbacks | Required on dynamic routes (`/ideas/[id]`) under Cache Components; the shell stays prerendered.                                                                        |
 | 2026-11-07 | Tag chip list labelled "Added tags"                                                                   | It shared the name "Tags" with the input (ambiguous for screen readers).                                                                                               |
 | 2026-11-07 | Native `<datalist>` for tag suggestions                                                               | Accessible autocomplete with no extra library.                                                                                                                         |
+| 2026-11-08 | Native date inputs + `'YYYY-MM-DD'` strings end to end; display via `parseISO` + `format`             | No date library pickers needed; no time-zone shifting.                                                                                                                 |
+| 2026-11-08 | Generic `useUrlFilters` extracted from the ideas code                                                 | Second use (projects) justified the abstraction.                                                                                                                       |
+| 2026-11-08 | Milestones: native checkboxes + up/down buttons (no drag and drop)                                    | Accessible by keyboard and screen reader with no extra library.                                                                                                        |
+| 2026-11-08 | Timestamps (`completedAt`) formatted from `new Date(...)`, never `.slice(0, 10)`                      | Slicing gives the UTC day, which can be off by one in the user's time zone.                                                                                            |
