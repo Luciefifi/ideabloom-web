@@ -186,6 +186,19 @@ or the limit can be bypassed with a fake header.
 - "Overdue" comes from the API (your time zone); the web never decides it. Completing or editing a task refreshes
   the projects too, because project progress is based on tasks.
 
+## Dashboard (`/dashboard`)
+
+- Greeting with your name and today's date (in your time zone, from the API).
+- **Quick capture**: an idea box and a task box (with due date and project), always visible.
+- **At a glance**: active ideas, active projects, pending tasks (and how many are due today), overdue tasks (red when
+  above 0). Each number links to its list (overdue opens `/tasks?view=overdue`).
+- **Deadlines**: overdue first, then the next 14 days: tasks, milestones and project target dates, with friendly dates
+  ("Today", "Tomorrow", "13 Nov") and a link to where each one lives.
+- **Projects in progress** (5, with progress bars), **Ideas by status** and **Tasks completed** (8 weeks, Monday start)
+  charts (Recharts) with a text version for screen readers, **Recent activity** (10, with links) and **Recently added ideas**.
+- Data comes from `GET /dashboard` (plus `/activity` and `/ideas`). It refreshes when you return to the tab and
+  after any change anywhere in the app (`summaryKeys` + a global `MutationCache` in `AppProviders`); no polling.
+
 ## Notes (`/notes`, `/notes/<id>`)
 
 - **List**: cards with title, first lines, tags, what it's attached to, "edited 5 minutes ago"; pinned notes first.
