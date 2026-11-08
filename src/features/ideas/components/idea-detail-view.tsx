@@ -49,6 +49,8 @@ import {
 } from '../use-ideas';
 import { CategoryChip, PriorityIndicator, StatusBadge } from './idea-badges';
 import { IdeaForm } from './idea-form';
+import { AttachedNotes } from '@/features/notes/components/attached-notes';
+import { AttachedResources } from '@/features/resources/components/attached-resources';
 
 function BackLink() {
   return (
@@ -207,7 +209,8 @@ function IdeaDetail({ idea }: { idea: Idea }) {
                 <AlertDialogTitle>Delete this idea?</AlertDialogTitle>
                 <AlertDialogDescription>
                   &ldquo;{idea.title}&rdquo; and its links will be deleted
-                  permanently. To keep it out of the way instead, archive it.
+                  permanently. Its notes and resources are kept. To keep the
+                  idea out of the way instead, archive it.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -273,6 +276,27 @@ function IdeaDetail({ idea }: { idea: Idea }) {
           </ul>
         </section>
       )}
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <section
+          aria-labelledby="idea-notes"
+          className="rounded-xl border bg-card p-4"
+        >
+          <h2 id="idea-notes" className="mb-2 text-sm font-medium">
+            Notes
+          </h2>
+          <AttachedNotes attachTo={{ ideaId: idea.id }} />
+        </section>
+        <section
+          aria-labelledby="idea-resources"
+          className="rounded-xl border bg-card p-4"
+        >
+          <h2 id="idea-resources" className="mb-2 text-sm font-medium">
+            Resources
+          </h2>
+          <AttachedResources attachTo={{ ideaId: idea.id }} />
+        </section>
+      </div>
 
       <section
         aria-labelledby="edit-idea"

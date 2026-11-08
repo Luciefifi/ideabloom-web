@@ -186,6 +186,33 @@ or the limit can be bypassed with a fake header.
 - "Overdue" comes from the API (your time zone); the web never decides it. Completing or editing a task refreshes
   the projects too, because project progress is based on tasks.
 
+## Notes (`/notes`, `/notes/<id>`)
+
+- **List**: cards with title, first lines, tags, what it's attached to, "edited 5 minutes ago"; pinned notes first.
+  Search (inside the text too), category, tag, "pinned only" and sort live in the URL.
+- **New note** creates an empty note and opens the editor. From an idea or project page, it's attached there.
+- **Editor** (Tiptap, MIT open-source core only): bold, italic, underline, strikethrough, code, headings, bullet/numbered
+  lists, checklists, quotes, links (only `https://`, `http://`, `mailto:`), undo/redo.
+- **Autosave**: about 1 second after you stop typing ("Unsaved changes → Saving… → Saved"; "Couldn't save. Try again"
+  keeps your changes). Leaving the page saves what's pending; closing the tab with unsaved changes asks first.
+  Logic: `src/hooks/use-autosave.ts` (tested with fake timers).
+- **Organise panel**: attached to (one idea or one project), category, tags, pin. These save immediately.
+- Note text is JSON shown only through the editor; the app never inserts note HTML into the page.
+
+## Resources (`/resources`)
+
+- Saved links with a type icon (website, article, video, document, other), the site's domain, description, your notes,
+  category and tags. Links open in a new tab with `rel="noopener noreferrer"`.
+- Add/edit in a side panel. The type is suggested from the link (YouTube/Vimeo → video, .pdf/.docx → document) unless
+  you picked one yourself. Only `http(s)://` links are accepted.
+- Filters: search (title, description, your notes), type, category, tag, sort (in the URL).
+
+## Notes and resources on idea and project pages
+
+- Each idea and project page has **Notes** and **Resources** sections (10 most recent) with "New note" / "Add resource"
+  already attached to it. Deleting the idea/project keeps them (the delete dialogs say so).
+- Categories and tags (organise page) show how many ideas, notes and resources use them.
+
 ## Project structure
 
 ```

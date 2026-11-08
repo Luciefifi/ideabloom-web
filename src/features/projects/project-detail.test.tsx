@@ -62,6 +62,16 @@ function project(overrides: Partial<Project> = {}): Project {
 }
 
 const base = (p: Project = project()) => ({
+  'GET /notes?projectId=p1&page=1&pageSize=10': () =>
+    jsonResponse({
+      data: [],
+      meta: { page: 1, pageSize: 10, total: 0, totalPages: 0 },
+    }),
+  'GET /resources?projectId=p1&page=1&pageSize=10': () =>
+    jsonResponse({
+      data: [],
+      meta: { page: 1, pageSize: 10, total: 0, totalPages: 0 },
+    }),
   'GET /projects/p1': () => jsonResponse(p),
   'GET /tasks?projectId=p1&page=1&pageSize=25': () =>
     jsonResponse({
