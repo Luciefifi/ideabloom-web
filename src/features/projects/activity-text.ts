@@ -24,6 +24,10 @@ export function describeProjectActivity(entry: ActivityEntry): string {
       return `Reopened milestone "${String(m.milestone)}"`;
     case 'milestone_deleted':
       return `Deleted milestone "${String(m.milestone)}"`;
+    case 'task_completed':
+      return `Completed task "${String(m.task)}"`;
+    case 'task_reopened':
+      return `Reopened task "${String(m.task)}"`;
     case 'idea_linked':
       return `Linked the idea "${String(m.idea)}"`;
     case 'idea_unlinked':
