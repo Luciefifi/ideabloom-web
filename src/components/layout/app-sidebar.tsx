@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/brand/logo';
 import {
@@ -26,10 +27,8 @@ import {
   type NavItem,
 } from './nav-items';
 
-function NavLink({ item }: { item: NavItem }) {
-  const pathname = usePathname();
+function NavLinkView({ item, active }: { item: NavItem; active: boolean }) {
   const { isMobile, setOpenMobile } = useSidebar();
-  const active = isNavItemActive(item, pathname);
 
   return (
     <SidebarMenuItem>
@@ -49,6 +48,24 @@ function NavLink({ item }: { item: NavItem }) {
         <span>{item.title}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
+  );
+}
+
+function ActiveAwareNavLink({ item }: { item: NavItem }) {
+  const pathname = usePathname();
+  return <NavLinkView item={item} active={isNavItemActive(item, pathname)} />;
+}
+
+/**
+ * Reading the URL (usePathname) on dynamic pages like /ideas/[id] must happen
+ * inside Suspense. The fallback is the same link, just not highlighted, so
+ * the sidebar is always there instantly.
+ */
+function NavLink({ item }: { item: NavItem }) {
+  return (
+    <Suspense fallback={<NavLinkView item={item} active={false} />}>
+      <ActiveAwareNavLink item={item} />
+    </Suspense>
   );
 }
 
