@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { THEME_SCRIPT } from '@/lib/theme';
 import { AppProviders } from '@/providers/app-providers';
 import './globals.css';
 
@@ -21,7 +22,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
+    // suppressHydrationWarning: the theme script below may add the "dark" class
+    // before React loads, which is expected.
+    <html
+      lang="en"
+      className={`${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Applies the saved theme before the first paint (no white flash). Fixed text, no user data. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-full">
         <AppProviders>{children}</AppProviders>
       </body>

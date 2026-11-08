@@ -60,15 +60,9 @@ export function UserMenu() {
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger
-            render={
-              <SidebarMenuButton
-                size="lg"
-                aria-label={`Account menu for ${user.displayName}`}
-              />
-            }
-          >
-            <Avatar className="size-8 rounded-lg">
+          <DropdownMenuTrigger render={<SidebarMenuButton size="lg" />}>
+            <span className="sr-only">Account menu:</span>{' '}
+            <Avatar className="size-8 rounded-lg" aria-hidden="true">
               <AvatarFallback className="rounded-lg bg-lavender-soft font-medium text-lavender-deep">
                 {initials(user.displayName)}
               </AvatarFallback>

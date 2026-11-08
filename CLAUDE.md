@@ -65,3 +65,8 @@ inside this folder. At the start of a session, check its progress log to see whe
 - shadcn components here import `cn` from the `cn` package (shadcn's official one, since M0); keep generated files as they are.
   When `shadcn add` asks to overwrite an existing component, answer **no** (`yes n | npx shadcn@4.23.0 add …`).
 - Search text from the API contains highlight markers: render it with `Highlighted`, and use `plainText()` for URLs/labels.
+- Run `npm run e2e` before a release (API repo next door, `npm run db:up` there). New pages: add them to the axe
+  list in `e2e/appearance-a11y.spec.ts`.
+- Colours: use theme tokens; any fixed Tailwind colour needs a `dark:` variant, and new colour pairs must pass 4.5:1.
+- Components whose first render would use client-cached data (e.g. the current user) must use `useHydrated()`.
+- Large libraries used on one page go through `next/dynamic` (see the note editor and dashboard charts).

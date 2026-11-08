@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { CheckCircle2Icon } from 'lucide-react';
 import { FormErrorAlert } from '@/components/forms/form-error-alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { SubmitButton } from '@/components/forms/submit-button';
 import { PasswordField, TextField } from '@/components/forms/text-field';
 import { FieldGroup } from '@/components/ui/field';
@@ -31,7 +33,12 @@ export function LoginForm() {
     login.mutate(values, {
       onSuccess: (user) => {
         toast.success(`Welcome back, ${user.displayName}!`);
-        router.replace(getSafeRedirect(searchParams.get('next')));
+        router.replace(
+          getSafeRedirect(
+            searchParams.get('next'),
+            `/${user.preferences.startPage}`,
+          ),
+        );
       },
     });
   });
@@ -39,6 +46,14 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit} noValidate>
       <FieldGroup>
+        {searchParams.get('deleted') === '1' && (
+          <Alert>
+            <CheckCircle2Icon aria-hidden="true" />
+            <AlertDescription>
+              Your account and all its content were deleted.
+            </AlertDescription>
+          </Alert>
+        )}
         <FormErrorAlert error={login.error} />
         <TextField
           id="email"

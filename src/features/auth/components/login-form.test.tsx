@@ -18,6 +18,7 @@ const user = {
   displayName: 'Lucie',
   bio: null,
   timezone: 'UTC',
+  preferences: { theme: 'system', startPage: 'dashboard' },
   createdAt: '2026-11-07T00:00:00.000Z',
 };
 
@@ -75,6 +76,27 @@ describe('LoginForm', () => {
     await fillAndSubmit('lucie@example.com', 'correct horse battery staple');
 
     await vi.waitFor(() => expect(replace).toHaveBeenCalledWith('/dashboard'));
+  });
+
+  it('opens your chosen start page when there is no ?next=', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      jsonResponse({
+        user: { ...user, preferences: { theme: 'dark', startPage: 'tasks' } },
+      }),
+    );
+    renderWithProviders(<LoginForm />);
+
+    await fillAndSubmit('lucie@example.com', 'correct horse battery staple');
+
+    await vi.waitFor(() => expect(replace).toHaveBeenCalledWith('/tasks'));
+  });
+
+  it('confirms a deleted account', () => {
+    searchParams = new URLSearchParams('deleted=1');
+    renderWithProviders(<LoginForm />);
+    expect(
+      screen.getByText('Your account and all its content were deleted.'),
+    ).toBeInTheDocument();
   });
 
   it("shows the API's message when the login fails", async () => {

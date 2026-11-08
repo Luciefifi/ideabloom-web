@@ -166,7 +166,7 @@ export function TaskRow({ task, onOpen, hideProject }: TaskRowProps) {
           </button>
           <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
             {task.status === 'in_progress' && (
-              <span className="font-medium text-sky-700">
+              <span className="font-medium text-sky-700 dark:text-sky-300">
                 {TASK_STATUS_LABELS.in_progress}
               </span>
             )}

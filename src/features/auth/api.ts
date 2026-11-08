@@ -1,4 +1,24 @@
 import { api } from '@/lib/api-client';
+import type { Theme } from '@/lib/theme';
+
+export const START_PAGES = ['dashboard', 'ideas', 'tasks'] as const;
+export type StartPage = (typeof START_PAGES)[number];
+
+export interface Preferences {
+  theme: Theme;
+  /** Opens after logging in. */
+  startPage: StartPage;
+}
+
+/** A signed-in device (see GET /auth/sessions). */
+export interface Session {
+  id: string;
+  /** e.g. "Chrome on Windows" */
+  device: string;
+  signedInAt: string;
+  lastActiveAt: string;
+  current: boolean;
+}
 
 /** The user profile returned by the API (see ideabloom-api UserResponseDto). */
 export interface User {
@@ -7,6 +27,7 @@ export interface User {
   displayName: string;
   bio: string | null;
   timezone: string;
+  preferences: Preferences;
   createdAt: string;
 }
 
@@ -27,6 +48,7 @@ export interface ProfileInput {
   displayName?: string;
   bio?: string | null;
   timezone?: string;
+  preferences?: Partial<Preferences>;
 }
 
 export interface ChangePasswordInput {
@@ -68,4 +90,14 @@ export const authApi = {
 
   resetPassword: (token: string, newPassword: string) =>
     api.post<MessageResponse>('/auth/reset-password', { token, newPassword }),
+
+  sessions: () => api.get<Session[]>('/auth/sessions'),
+
+  signOutSession: (id: string) => api.delete(`/auth/sessions/${id}`),
+
+  /** Everything you created, as one JSON object (see GET /users/me/export). */
+  exportData: () => api.get<Record<string, unknown>>('/users/me/export'),
+
+  deleteAccount: (password: string) =>
+    api.delete('/auth/account', { password, confirm: 'DELETE' }),
 };
