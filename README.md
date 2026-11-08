@@ -186,6 +186,41 @@ or the limit can be bypassed with a fake header.
 - "Overdue" comes from the API (your time zone); the web never decides it. Completing or editing a task refreshes
   the projects too, because project progress is based on tasks.
 
+## Settings (`/settings`)
+
+- **Profile**, **Password**, **Appearance & preferences** (theme Light / Dark / System and the start page after
+  login), **Signed-in devices** (sign one out, or all), **Your data** (download a JSON copy) and **Delete account**
+  (password + typing DELETE).
+- **Theme**: saved to the account (follows you to every device) and kept in `localStorage` (`ib-theme`) so a small
+  fixed inline script in `<head>` (`THEME_SCRIPT`, `src/lib/theme.ts`) applies it before the first paint: no white
+  flash. `ThemeSync` makes the account win after login; `useTheme` follows the computer when set to System.
+
+## Quality and security
+
+- **Error pages**: `src/app/(app)/error.tsx` ("Something went wrong · Try again") and `src/app/global-error.tsx`.
+- **Accessibility**: "Skip to content" link, labelled controls, text alternatives for charts, WCAG AA colours in both
+  themes, automatic axe scans in the end-to-end tests.
+- **Speed**: the note editor and the dashboard charts are loaded only where they're used (`next/dynamic`).
+- **Security headers** (`next.config.ts`): Content-Security-Policy (only this site for scripts, styles, fonts,
+  images and connections; no framing; no plug-ins; forms only to this site), `nosniff`, `Referrer-Policy`,
+  `X-Frame-Options`, `Permissions-Policy`; no `X-Powered-By`. Inline scripts are allowed because Next.js needs them
+  and the strict "nonce" alternative would disable partial prerendering; the app never renders HTML from data.
+
+## End-to-end tests (Playwright)
+
+Real browser, real API, **test database** (never your development data):
+
+1. In `ideabloom-api`: `npm run db:up` (starts the test database too).
+2. Here: `npm run e2e` (first time: `npx playwright install chromium`). It builds and starts the API on :4001
+   (`NODE_ENV=test`) and the web app on :3100, runs `e2e/*.spec.ts`, then stops both. `npm run e2e:report`
+   opens the HTML report (screenshots and traces of failures).
+
+Covered: the idea → project → tasks → progress journey, note autosave across a reload, Ctrl + K search and the
+calendar, login protection and data isolation between two users, logout, security headers, dark mode before
+first paint, and axe scans of the main pages in light and dark.
+
+More: [User guide](docs/USER_GUIDE.md) · [Deployment checklist](docs/DEPLOYMENT.md) · [Changelog](CHANGELOG.md)
+
 ## Calendar (`/calendar`)
 
 - Month grid (weeks start on Monday) on tablets and larger; a day-by-day agenda on phones. The month is in the URL

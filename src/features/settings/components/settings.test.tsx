@@ -1,6 +1,6 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { hardNavigate } from '@/lib/navigation';
 import {
   jsonResponse,
@@ -8,6 +8,9 @@ import {
   renderWithProviders,
   testUser,
 } from '@/test/render';
+import { THEME_STORAGE_KEY } from '@/lib/theme';
+import { DeleteAccount, DownloadData } from './account-data';
+import { AppearanceForm } from './appearance-form';
 import { ChangePasswordForm } from './change-password-form';
 import { ProfileForm } from './profile-form';
 import { SessionsCard } from './sessions-card';
@@ -170,9 +173,58 @@ describe('ChangePasswordForm', () => {
   });
 });
 
+const sessions = [
+  {
+    id: 's1',
+    device: 'Chrome on Windows',
+    signedInAt: '2026-11-01T10:00:00.000Z',
+    lastActiveAt: new Date().toISOString(),
+    current: true,
+  },
+  {
+    id: 's2',
+    device: 'Safari on iOS',
+    signedInAt: '2026-10-20T10:00:00.000Z',
+    lastActiveAt: '2026-11-05T10:00:00.000Z',
+    current: false,
+  },
+];
+
+const calls = (fetchMock: ReturnType<typeof mockApi>, method: string) =>
+  fetchMock.mock.calls
+    .filter(([, init]) => (init?.method ?? 'GET') === method)
+    .map(([url]) => String(url));
+
 describe('SessionsCard', () => {
+  it('lists your devices and marks this one', async () => {
+    mockApi({ 'GET /auth/sessions': () => jsonResponse(sessions) });
+    renderWithProviders(<SessionsCard />);
+
+    const list = await screen.findByRole('list', { name: 'Signed-in devices' });
+    const items = within(list).getAllByRole('listitem');
+    expect(items[0]).toHaveTextContent('Chrome on WindowsThis device');
+    expect(items[1]).toHaveTextContent('Safari on iOS');
+  });
+
+  it('signs another device out', async () => {
+    const fetchMock = mockApi({
+      'GET /auth/sessions': () => jsonResponse(sessions),
+      'DELETE /auth/sessions/s2': () => new Response(null, { status: 204 }),
+    });
+    renderWithProviders(<SessionsCard />);
+
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Sign out Safari on iOS' }),
+    );
+    await vi.waitFor(() =>
+      expect(calls(fetchMock, 'DELETE')).toEqual(['/api/v1/auth/sessions/s2']),
+    );
+    expect(hardNavigate).not.toHaveBeenCalled(); // this device stays signed in
+  });
+
   it('asks for confirmation, then logs out everywhere', async () => {
     const fetchMock = mockApi({
+      'GET /auth/sessions': () => jsonResponse(sessions),
       'POST /auth/logout-all': () => new Response(null, { status: 204 }),
     });
     renderWithProviders(<SessionsCard />);
@@ -185,17 +237,18 @@ describe('SessionsCard', () => {
         name: 'Log out of all devices?',
       }),
     ).toBeInTheDocument();
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(calls(fetchMock, 'POST')).toEqual([]);
 
     await userEvent.click(
       screen.getByRole('button', { name: 'Log out everywhere' }),
     );
-
     await vi.waitFor(() => expect(hardNavigate).toHaveBeenCalledWith('/login'));
   });
 
   it('does nothing when cancelled', async () => {
-    const fetchMock = mockApi({});
+    const fetchMock = mockApi({
+      'GET /auth/sessions': () => jsonResponse(sessions),
+    });
     renderWithProviders(<SessionsCard />);
 
     await userEvent.click(
@@ -204,7 +257,152 @@ describe('SessionsCard', () => {
     await userEvent.click(
       await screen.findByRole('button', { name: 'Cancel' }),
     );
+    expect(calls(fetchMock, 'POST')).toEqual([]);
+  });
+});
 
-    expect(fetchMock).not.toHaveBeenCalled();
+describe('AppearanceForm', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.classList.remove('dark');
+  });
+
+  it('switches to dark right away and saves it to the account', async () => {
+    const fetchMock = mockApi({
+      'PATCH /users/me': () =>
+        jsonResponse({
+          ...testUser,
+          preferences: { ...testUser.preferences, theme: 'dark' },
+        }),
+    });
+    renderWithProviders(<AppearanceForm user={testUser} />);
+
+    expect(screen.getByRole('radio', { name: 'System' })).toBeChecked();
+    await userEvent.click(screen.getByRole('radio', { name: 'Dark' }));
+
+    expect(document.documentElement).toHaveClass('dark');
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('dark');
+    await vi.waitFor(() =>
+      expect(lastBody(fetchMock)).toEqual({ preferences: { theme: 'dark' } }),
+    );
+  });
+
+  it('saves the start page', async () => {
+    const fetchMock = mockApi({
+      'PATCH /users/me': () => jsonResponse(testUser),
+    });
+    renderWithProviders(<AppearanceForm user={testUser} />);
+
+    await userEvent.selectOptions(screen.getByLabelText('Start page'), 'tasks');
+    await vi.waitFor(() =>
+      expect(lastBody(fetchMock)).toEqual({
+        preferences: { startPage: 'tasks' },
+      }),
+    );
+  });
+});
+
+describe('DownloadData', () => {
+  it('downloads your data as a JSON file', async () => {
+    mockApi({
+      'GET /users/me/export': () =>
+        jsonResponse({ format: 'ideabloom-export', ideas: [] }),
+    });
+    const createUrl = vi.fn(() => 'blob:export');
+    Object.assign(URL, {
+      createObjectURL: createUrl,
+      revokeObjectURL: vi.fn(),
+    });
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, 'click')
+      .mockImplementation(() => {});
+    renderWithProviders(<DownloadData />);
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Download my data' }),
+    );
+
+    await vi.waitFor(() => expect(click).toHaveBeenCalled());
+    const anchor = click.mock.contexts[0] as HTMLAnchorElement;
+    expect(anchor.download).toMatch(
+      /^ideabloom-export-\d{4}-\d{2}-\d{2}\.json$/,
+    );
+    expect(createUrl).toHaveBeenCalled();
+  });
+});
+
+describe('DeleteAccount', () => {
+  it('needs your password and DELETE, then deletes and leaves', async () => {
+    const fetchMock = mockApi({
+      'DELETE /auth/account': () => new Response(null, { status: 204 }),
+    });
+    renderWithProviders(<DeleteAccount />);
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Delete my account' }),
+    );
+    const dialog = await screen.findByRole('alertdialog', {
+      name: 'Delete your account?',
+    });
+    const confirm = within(dialog).getByRole('button', {
+      name: 'Delete permanently',
+    });
+    expect(confirm).toBeDisabled();
+
+    await userEvent.type(
+      within(dialog).getByLabelText('Your password'),
+      'secret pass',
+    );
+    await userEvent.type(
+      within(dialog).getByLabelText(/Type DELETE/),
+      'delete',
+    );
+    expect(confirm).toBeDisabled(); // must be exactly DELETE
+
+    await userEvent.clear(within(dialog).getByLabelText(/Type DELETE/));
+    await userEvent.type(
+      within(dialog).getByLabelText(/Type DELETE/),
+      'DELETE',
+    );
+    await userEvent.click(confirm);
+
+    await vi.waitFor(() =>
+      expect(hardNavigate).toHaveBeenCalledWith('/login?deleted=1'),
+    );
+    expect(lastBody(fetchMock)).toEqual({
+      password: 'secret pass',
+      confirm: 'DELETE',
+    });
+  });
+
+  it('shows the API message when the password is wrong', async () => {
+    mockApi({
+      'DELETE /auth/account': () =>
+        jsonResponse(
+          { statusCode: 400, message: 'Your password is incorrect.' },
+          400,
+        ),
+    });
+    renderWithProviders(<DeleteAccount />);
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Delete my account' }),
+    );
+    const dialog = await screen.findByRole('alertdialog');
+    await userEvent.type(
+      within(dialog).getByLabelText('Your password'),
+      'wrong',
+    );
+    await userEvent.type(
+      within(dialog).getByLabelText(/Type DELETE/),
+      'DELETE',
+    );
+    await userEvent.click(
+      within(dialog).getByRole('button', { name: 'Delete permanently' }),
+    );
+
+    expect(
+      await within(dialog).findByText('Your password is incorrect.'),
+    ).toBeInTheDocument();
   });
 });
