@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
+import { describeUsage } from '@/lib/usage';
 import { cn } from '@/lib/utils';
 import { categoryStyle } from '../idea-styles';
 import type { Category, CategoryColor } from '../types';
@@ -21,8 +22,6 @@ import {
 } from '../use-organize';
 import { ColorPicker } from './color-picker';
 import { ConfirmDelete } from './confirm-delete';
-
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
 function CategoryEditor({
   initialName = '',
@@ -90,7 +89,7 @@ function CategoryRow({ category }: { category: Category }) {
   const [editing, setEditing] = useState(false);
   const update = useUpdateCategory();
   const remove = useDeleteCategory();
-  const count = category.ideaCount ?? 0;
+  const usage = describeUsage(category);
 
   if (editing) {
     return (
@@ -131,9 +130,7 @@ function CategoryRow({ category }: { category: Category }) {
         aria-hidden="true"
       />
       <span className="flex-1 truncate font-medium">{category.name}</span>
-      <span className="text-sm text-muted-foreground">
-        {plural(count, 'idea')}
-      </span>
+      <span className="text-sm text-muted-foreground">{usage.short}</span>
       <Button
         variant="ghost"
         size="icon"
@@ -145,9 +142,9 @@ function CategoryRow({ category }: { category: Category }) {
       <ConfirmDelete
         title={`Delete category "${category.name}"`}
         description={
-          count > 0
-            ? `${plural(count, 'idea')} ${count === 1 ? 'uses' : 'use'} this category. ${count === 1 ? "It won't be deleted; it'll" : "They won't be deleted; they'll"} become uncategorized.`
-            : 'No ideas use this category.'
+          usage.total > 0
+            ? `Used by ${usage.text}. Nothing else is deleted: ${usage.total === 1 ? 'it becomes' : 'they become'} uncategorized.`
+            : 'Nothing uses this category.'
         }
         pending={remove.isPending}
         onConfirm={(close) =>

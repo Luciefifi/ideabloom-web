@@ -34,6 +34,16 @@ const lookups = {
       { id: 'cat-2', name: 'Business', color: 'sky' },
     ]),
   'GET /tags': () => jsonResponse([{ id: 't1', name: 'mobile' }]),
+  'GET /notes?ideaId=idea-1&page=1&pageSize=10': () =>
+    jsonResponse({
+      data: [],
+      meta: { page: 1, pageSize: 10, total: 0, totalPages: 0 },
+    }),
+  'GET /resources?ideaId=idea-1&page=1&pageSize=10': () =>
+    jsonResponse({
+      data: [],
+      meta: { page: 1, pageSize: 10, total: 0, totalPages: 0 },
+    }),
 };
 
 const lastBody = (fetchMock: ReturnType<typeof mockApi>, method: string) => {

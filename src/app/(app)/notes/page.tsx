@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
-import { NotebookPen } from 'lucide-react';
-import { EmptyState } from '@/components/shared/empty-state';
+import { Suspense } from 'react';
 import { PageHeader } from '@/components/shared/page-header';
+import { Skeleton } from '@/components/ui/skeleton';
+import { NewNoteButton } from '@/features/notes/components/new-note-button';
+import { NotesView } from '@/features/notes/components/notes-view';
 
 export const metadata: Metadata = { title: 'Notes' };
 
@@ -11,12 +13,12 @@ export default function NotesPage() {
       <PageHeader
         title="Notes"
         description="Write down thoughts, plans and research."
+        actions={<NewNoteButton />}
       />
-      <EmptyState
-        icon={NotebookPen}
-        title="No notes yet"
-        description="Rich-text notes you can link to ideas and projects. (Milestone 5)"
-      />
+      {/* NotesView reads its filters from the URL, which needs a Suspense boundary. */}
+      <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+        <NotesView />
+      </Suspense>
     </>
   );
 }

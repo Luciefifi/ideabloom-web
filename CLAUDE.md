@@ -52,3 +52,8 @@ inside this folder. At the start of a session, check its progress log to see whe
   (otherwise dynamic routes fail the build).
   Run `npm run typecheck` too: Vitest doesn't type-check, and the build does.
 - Don't install `@vitejs/plugin-react` or use `--legacy-peer-deps` (see the decisions log).
+- Note content is Tiptap JSON: render it with `NoteEditor` only, never with `dangerouslySetInnerHTML`. Keep the Tiptap
+  packages on one exact version. Link rules (`SAFE_LINK`) must match the API's.
+- Autosave goes through `useAutosave` (`src/hooks`). Don't re-key the editor on `updatedAt` (it would reset while typing).
+- Queries that return a plain page must not live under a key that another hook rewrites as infinite data
+  (e.g. `ideaKeys.lists()`); use a separate key such as `['ideas', 'options']`.
