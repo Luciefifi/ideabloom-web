@@ -141,11 +141,36 @@ or the limit can be bypassed with a fake header.
 - ⭐ favourite, **Archive** (with Undo) / **Restore**, **Delete** (asks for confirmation; permanent).
 - "Idea not found" for deleted, mistyped or other people's ideas.
 
+- **Convert to project** (idea page): dialog with title and dates; opens the new project. Converted ideas show
+  **Open project** instead.
+
 ### Organize (`/ideas/organize`)
 
 - Categories: add, rename, recolour (8-colour palette), delete. Deleting warns how many ideas will become
   uncategorized; the ideas are kept.
 - Tags: rename or delete (removed from ideas; the ideas are kept), with idea counts.
+
+## Projects page (`/projects`)
+
+- Active projects by default (status filter: _All projects_ or one status), plus priority, category, search and sort
+  (recently updated, target date, most progress, title, newest). Filters live in the URL.
+- Cards: status, category, priority, **progress bar** with "3 of 5 milestones", target date (red **Overdue** when the API
+  says so), milestone count.
+- **New project** side panel (title, goals, description, status, priority, category, start/target dates).
+- Dates are plain `YYYY-MM-DD` and displayed with `formatDay()` (no time-zone shift).
+
+### Project page (`/projects/<id>`)
+
+- Header: status badge, category, priority; **quick status select**; **Edit** (side panel with the project form);
+  **Delete** (explains: milestones deleted, ideas kept, the source idea goes back to Planned).
+- **Progress**: big percentage + bar + "1 of 3 milestones", what it's based on, start/target/completed dates.
+- When every milestone is done: "Mark the project as completed?" (a suggestion; nothing is automatic).
+- **Milestones**: tick off/reopen (checkboxes), edit, delete (confirm), move up/down, add (title + optional due date);
+  overdue milestones in red.
+- **Related ideas**: links to each idea with its status; "Started from this idea" for the source; link another idea,
+  unlink (not the source).
+- **Activity**: the project's history as a timeline ("Completed milestone "Beta"", "Changed status from Planning to
+  In progress"…).
 
 ## Project structure
 

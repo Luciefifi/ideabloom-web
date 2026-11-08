@@ -72,6 +72,8 @@ export interface IdeaSummary extends IdeaBase {
 export interface Idea extends IdeaBase {
   description: string | null;
   links: IdeaLink[];
+  /** The project this idea was turned into or is linked to. */
+  project: { id: string; title: string } | null;
 }
 
 export interface PageMeta {
